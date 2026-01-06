@@ -16,6 +16,9 @@
   <nav class="navbar">
     <div class="container nav-container">
       <a href="#" class="logo">Sane<span>Space</span></a>
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
       <ul class="nav-links">
         <li><a href="#about" class="nav-link">About Us</a></li>
         <li><a href="exercises.html" class="nav-link">Exercises</a></li>
@@ -23,9 +26,15 @@
         <li><a href="contact.html" class="nav-link">Contact</a></li>
         <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
       </ul>
-      <button class="btn btn-primary" style="display: none;">Menu</button> <!-- Mobile Toggle Placeholder -->
     </div>
   </nav>
+
+  <script>
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      navLinks.classList.toggle('active');
+    }
+  </script>
 
   <!-- Hero Section -->
   <header class="hero">

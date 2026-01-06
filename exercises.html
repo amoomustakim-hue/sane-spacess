@@ -15,6 +15,9 @@
   <nav class="navbar">
     <div class="container nav-container">
       <a href="index.html" class="logo">Sane<span>Space</span></a>
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
       <ul class="nav-links">
         <li><a href="index.html#about" class="nav-link">About Us</a></li>
         <li><a href="exercises.html" class="nav-link active">Exercises</a></li>
@@ -24,6 +27,13 @@
       </ul>
     </div>
   </nav>
+
+  <script>
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      navLinks.classList.toggle('active');
+    }
+  </script>
 
   <!-- Header -->
   <section class="bg-light" style="padding: 4rem 0;">
@@ -122,7 +132,10 @@
 
             <div class="media-container">
               <div class="video-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/3bMj_YB7cYc?si=2TePcY-7Ap8g68Zd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen ></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/3bMj_YB7cYc?si=2TePcY-7Ap8g68Zd"
+                  title="YouTube video player" frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
               </div>
             </div>
           </div>
@@ -155,7 +168,11 @@
             <div class="media-container">
               <div class="audio-wrapper">
                 <div style="width: 100%">
-                  <iframe width="717" height="403" src="https://www.youtube.com/embed/L9hT0Lr4048" title="Daily Affirmations for Self Love, Self Esteem, Confidence 💖 Transform Your Mindset" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                  <iframe width="717" height="403" src="https://www.youtube.com/embed/L9hT0Lr4048"
+                    title="Daily Affirmations for Self Love, Self Esteem, Confidence 💖 Transform Your Mindset"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
               </div>
             </div>
@@ -172,7 +189,10 @@
             </ul>
             <div class="media-container">
               <div class="video-wrapper">
-                <iframe width="717" height="403" src="https://www.youtube.com/embed/gsYL4PC0hyk" title="The Grieving Process: Coping with Death" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe width="717" height="403" src="https://www.youtube.com/embed/gsYL4PC0hyk"
+                  title="The Grieving Process: Coping with Death" frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
               </div>
             </div>
           </div>
@@ -206,7 +226,8 @@
             <ul>
               <li><strong>Stimming:</strong> Allow yourself to move (flap, rock) to regulate emotions.</li>
               <li><strong>Safe Space:</strong> Retreat to a quiet, dark room for 15 minutes.</li>
-            </ul><div class="media-container">
+            </ul>
+            <div class="media-container">
               <div class="audio-wrapper">
                 <div style="width: 100%">
                   <h6>🎧 Sensory Regulation Audio</h6>
