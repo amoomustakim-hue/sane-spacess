@@ -1,176 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>SaneSpace | Your Mental Wellness Sanctuary</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>  
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="#">Sane<span class="space">Space</span></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#about">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="exercises.html" tabindex="-1" aria-disabled="true">Exercises</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="#ourservices" tabindex="-1" aria-disabled="true">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="contact.html" tabindex="-1" aria-disabled="true">Contact Us</a>
-        </li>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="logo">Sane<span>Space</span></a>
+      <ul class="nav-links">
+        <li><a href="#about" class="nav-link">About Us</a></li>
+        <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+        <li><a href="#ourservices" class="nav-link">Services</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
       </ul>
+      <button class="btn btn-primary" style="display: none;">Menu</button> <!-- Mobile Toggle Placeholder -->
     </div>
-  </div>
-</nav>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Welcome to Sane<span>Space</span></h1>
+          <p class="lead">Your Safe Space in the daily chaos. We offer a digital sanctuary for healing, growth, and
+            support. Whether you're seeking guidance, resources, or just someone who understands, you're not alone here.
+          </p>
+          <div class="flex gap-sm">
+            <a href="#ourservices" class="btn btn-primary">Start Healing</a>
+            <a href="#about" class="btn btn-outline">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-img">
+          <img src="images/istockphoto-1386401112-612x612.webp" alt="Peaceful mind illustration">
+        </div>
+      </div>
+    </div>
   </header>
-<section class="hero">
-  <div class="text-center" id="hero-content">
-     <h1 class="fw-bold">Welcome to Sane<span class="space">Space</span></h1>
-     <p>Your Safe Space in the daily chaos. Our safe space for healing, growth, and support.
-     Whether you're seeking guidance, resources, or just someone who understands, you're not alone here. Let's take this journey toward mental well-being together.</p>
-    <div class="col-12 text-center">
-        <button type="submit" class="btn btn-success px-4"><a href="#ourservices" class="link text-decoration-none">Learn More</a></button>
-      </div>
-  </div>
-  <div>
-    <img src="images/istockphoto-1386401112-612x612.webp" alt="" class="img-fluid" id="backgroundimage">
-  </div>
-</section>
-<section>
-  <div class="container text-center">
-    <h4>How are you feeling today?</h4>
-    <p>No matter how you're feeling you are not <br>alone remember: <em>you are not alone.</em><br>Remember take a deep breathe and relax. <br>We will work on this journey together</p>
-  </div>
-</section>
-<section class="about-header">
+
+  <!-- Daily Check-in -->
+  <section class="bg-light text-center" style="padding: 3rem 0;">
     <div class="container">
-      <h1>About SaneSpace</h1>
-      <p class="lead">A safe space for healing, growth, and mental wellness.</p>
+      <h4 style="color: var(--primary); margin-bottom: 0.5rem;">How are you feeling today?</h4>
+      <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        No matter how you're feeling, remember: <em>you are not alone.</em><br>
+        Take a deep breath. Relax. We will work on this journey together.
+      </p>
     </div>
   </section>
 
-  <!-- Who We Are -->
-  <section class="about-section">
+  <!-- About Section -->
+  <section id="about">
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216" 
-               alt="Mental Health Support" class="img-fluid rounded-4 shadow">
+      <div class="about-split">
+        <div class="about-img">
+          <!-- Using a high quality placeholder if original isn't great, but keeping consistent with existing flows -->
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216" alt="Support Group" class="img-fluid">
         </div>
-        <div class="col-md-6" id="about">
-          <h2 class="fw-bold text-purple">Who We Are</h2>
-          <p>
-            At <strong>SaneSpace</strong>, we believe mental health is just as important as physical health.  
-            We provide a welcoming and confidential environment where individuals can explore their thoughts, emotions, and challenges with professional support.  
-          </p>
-          <p>
-            Our mission is to make mental health care accessible, compassionate, and community-driven. Whether it’s private therapy, group sessions, or mindfulness exercises — we walk the journey with you.
-          </p>
+        <div class="about-text">
+          <h2 class="text-purple">Who We Are</h2>
+          <p>At <strong>SaneSpace</strong>, we believe mental health is just as important as physical health. We provide
+            a welcoming and confidential environment where individuals can explore their thoughts, emotions, and
+            challenges with professional support.</p>
+          <p>Our mission is to make mental health care accessible, compassionate, and community-driven. Whether it’s
+            private therapy, group sessions, or mindfulness exercises — we walk the journey with you.</p>
+          <br>
+          <div class="flex gap-sm">
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Confidential
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Professional
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Inclusive
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Our Values -->
-  <section class="about-section bg-light">
+  <!-- Core Values -->
+  <section class="bg-light">
     <div class="container">
-      <div class="row text-center mb-5">
-        <h2 class="fw-bold text-purple">Our Core Values</h2>
+      <div class="section-title">
+        <h2 class="text-purple">Our Core Values</h2>
         <p class="text-muted">The heart of everything we do at SaneSpace</p>
       </div>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="icon-box">
-            <i class="fas fa-heart"></i>
-            <h5>Compassion</h5>
-            <p>We listen, care, and respond with empathy in every interaction.</p>
-          </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-heart"></i></div>
+          <h3>Compassion</h3>
+          <p>We listen, care, and respond with empathy in every interaction. meaningful connections start with
+            understanding.</p>
         </div>
-        <div class="col-md-4">
-          <div class="icon-box">
-            <i class="fas fa-users"></i>
-            <h5>Community</h5>
-            <p>A safe and inclusive space where everyone belongs and feels supported.</p>
-          </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3>Community</h3>
+          <p>A safe and inclusive space where everyone belongs. We believe in the power of shared experiences and
+            collective healing.</p>
         </div>
-        <div class="col-md-4">
-          <div class="icon-box">
-            <i class="fas fa-lightbulb"></i>
-            <h5>Growth</h5>
-            <p>Encouraging personal healing, resilience, and lifelong learning.</p>
-          </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+          <h3>Growth</h3>
+          <p>Encouraging personal healing, resilience, and lifelong learning. Your journey is unique, and we honor every
+            step.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Call to Action -->
-  <section class="about-section text-center">
+  <!-- Services -->
+  <section id="ourservices">
     <div class="container">
-      <h2 class="fw-bold text-purple">Join Our Mission</h2>
-      <p class="mb-4">Be part of a community dedicated to breaking stigma and supporting mental wellness for all.</p>
-      <a href="mission.html" class="btn btn-lg" style="background:#6f42c1; color:white; border:none; border-radius: 30px;">Join Now</a>
+      <div class="section-title">
+        <h2>Our Services</h2>
+        <p class="text-muted">Comprehensive support tailored to your needs</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Service 1 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="images/istockphoto-1386401112-612x612.webp" alt="Group Therapy">
+          </div>
+          <div class="service-body">
+            <h3>Group Therapy</h3>
+            <p>Healing happens best in community. Share experiences, learn from one another, and grow together in a safe
+              space guided by professionals.</p>
+            <a href="book.html" class="btn btn-outline">Book Session</a>
+          </div>
+        </article>
+
+        <!-- Service 2 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="images/white-woman-speaking-aa-group-meeting.jpg" alt="Community Support">
+          </div>
+          <div class="service-body">
+            <h3>Community Support</h3>
+            <p>You are never alone. Join our supportive family to find encouragement and strength. Healing is a journey
+              we walk as one.</p>
+            <a href="join.html" class="btn btn-outline">Join Community</a>
+          </div>
+        </article>
+
+        <!-- Service 3 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="images/african-american-doctor-surgeon-sharing-his-ptsd-issues-with-psychiatrist.jpg"
+              alt="Private Therapy">
+          </div>
+          <div class="service-body">
+            <h3>Private Therapy</h3>
+            <p>Confidential spaces to talk openly with licensed professionals. Tailored sessions to help you heal and
+              regain balance at your own pace.</p>
+            <a href="book-private.html" class="btn btn-outline">Book Private</a>
+          </div>
+        </article>
+
+        <!-- Service 4 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="images/close-up-attractive-carefree-young-woman-sitting-floor.jpg" alt="Meditation">
+          </div>
+          <div class="service-body">
+            <h3>Mindfulness</h3>
+            <p>Guided exercises designed to help you reduce stress and refocus your mind. Take a pause and support your
+              well-being.</p>
+            <a href="exercises.html" class="btn btn-outline">Explore Exercises</a>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
-<!---Our Services-->
-<section class="ourservices" id="ourservices">
-      <div class="div2 text-center">
-        <h2 class="fw-bold">Our Services</h2>
-        <p>Book therapy Sessions, Community work, Meditation exercises,Private therapy that suits what you schedule here</p>
+  <!-- CTA Section -->
+  <section>
+    <div class="container">
+      <div class="cta-section">
+        <h2>Join Our Mission</h2>
+        <p class="mb-4" style="margin-bottom: 2rem;">Be part of a community dedicated to breaking stigma and supporting
+          mental wellness for all.</p>
+        <a href="mission.html" class="btn btn-white">Get Involved</a>
       </div>
-      </section>
-      <section class="sec2">
-      <div class="card" style="width: 20rem; height: 550px;">
-  <img src="images/istockphoto-1386401112-612x612.webp" class="card-img-top" alt="...">
-  <div class="card-body">
-    <p class="card-text">We believe healing happens best in community. Our group therapy sessions provide a safe and supportive space where individuals can share experiences, learn from one another, and grow together. Guided by professional therapists, these sessions help you build connections, gain strength, and find comfort knowing you are not alone on your journey</p>
-    <div>
-      <a href="book.html" class="btn btn-primary">Book Now</a>
     </div>
-  </div>
-</div>
-<div class="card" style="width: 20rem; height: 550px;">
-  <img src="images/white-woman-speaking-aa-group-meeting.jpg" class="card-img-top" alt="...">
-  <div class="card-body">
-    <p class="card-text">At SaneSpace, you are never alone. Our mental health community is a safe and supportive space where people come together to share experiences, find encouragement, and grow stronger together. Healing is a journey—and we walk it as one family.</p>
-    <div>
-      <a href="join.html" class="btn btn-primary">Join our Community Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="#" class="logo" style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+          <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for you.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#ourservices">Services</a></li>
+            <li><a href="exercises.html">Exercises</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Crisis Resources</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+      </div>
     </div>
-  </div>
-</div>
-<div class="card" style="width: 20rem; height: 550px;">
-  <img src="images/african-american-doctor-surgeon-sharing-his-ptsd-issues-with-psychiatrist.jpg" class="card-img-top" alt="...">
-  <div class="card-body">
-    <p class="card-text">Our private therapy sessions provide a safe and confidential space where you can talk openly with a licensed professional. At SaneSpace, we tailor each session to your unique needs, helping you heal, grow, and regain balance at your own pace.</p>
-    <div>
-      <a href="book-private.html" class="btn btn-primary">Book Private Session Now</a>
-    </div>
-  </div>
-</div>
-<div class="card" style="width: 20rem; height: 550px;">
-  <img src="images/close-up-attractive-carefree-young-woman-sitting-floor.jpg" class="card-img-top" alt="..." style="height: 250px; width: 200px;">
-  <div class="card-body">
-    <p class="card-text">Take a pause. These guided exercises are designed to help you reduce stress, refocus your mind, and support your overall well-being—one breath at a time.</p>
-     <a href="audio/meditation-yoga-relaxing-music-380330.mp3" class="btn btn-primary">Meditation Audio</a>
-    </div>
-  </div>
-</div>
-</section>
-<footer class="about-section text-center" style="background-color: lightgray;margin-top: 20px;">
-    <p>© Sane<span style="color: purple;">Space</span>| All Rights reserved</p>
-</footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </footer>
+
 </body>
+
 </html>
