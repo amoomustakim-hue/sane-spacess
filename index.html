@@ -53,11 +53,75 @@
     <div class="container">
       <h4 style="color: var(--primary); margin-bottom: 0.5rem;">How are you feeling today?</h4>
       <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-        No matter how you're feeling, remember: <em>you are not alone.</em><br>
-        Take a deep breath. Relax. We will work on this journey together.
+        Check in with yourself. Select an option below to get personalized support right now.
       </p>
+
+      <div class="mood-container">
+        <button class="mood-btn" onclick="handleMood('anxious')">😰 Anxious</button>
+        <button class="mood-btn" onclick="handleMood('sad')">😔 Sad</button>
+        <button class="mood-btn" onclick="handleMood('stressed')">🤯 Stressed</button>
+        <button class="mood-btn" onclick="handleMood('good')">🙂 Good</button>
+      </div>
+
+      <div id="mood-response-box" class="mood-response">
+        <h5 id="response-title" class="fw-bold mb-2"></h5>
+        <p id="response-text" class="text-muted mb-3"></p>
+        <a id="response-link" href="#" class="btn btn-primary btn-sm">Take Action</a>
+      </div>
     </div>
   </section>
+
+  <script>
+    function handleMood(mood) {
+      const box = document.getElementById('mood-response-box');
+      const title = document.getElementById('response-title');
+      const text = document.getElementById('response-text');
+      const link = document.getElementById('response-link');
+
+      // Reset button styles
+      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      let data = {};
+
+      if (mood === 'anxious') {
+        data = {
+          title: "Take a deep breath.",
+          text: "Anxiety can feel overwhelming, but you are safe. Try our 4-7-8 breathing exercise to calm your nervous system immediately.",
+          linkUrl: "exercises.html",
+          linkText: "Start Breathing Exercise"
+        };
+      } else if (mood === 'sad') {
+        data = {
+          title: "It's okay not to be okay.",
+          text: "Sadness is a heavy emotion, but you don't have to carry it alone. Our community is here to listen and support you.",
+          linkUrl: "join.html",
+          linkText: "Connect with Community"
+        };
+      } else if (mood === 'stressed') {
+        data = {
+          title: "One step at a time.",
+          text: "Stress often comes from trying to do everything at once. Let's pause and organize your thoughts, or just vent.",
+          linkUrl: "contact.html",
+          linkText: "Talk to Someone"
+        };
+      } else if (mood === 'good') {
+        data = {
+          title: "That's wonderful!",
+          text: "Holding onto positive energy is a practice too. Why not share your good vibes or learn how to maintain this balance?",
+          linkUrl: "mission.html",
+          linkText: "Share the Love"
+        };
+      }
+
+      title.textContent = data.title;
+      text.textContent = data.text;
+      link.href = data.linkUrl;
+      link.textContent = data.linkText;
+
+      box.style.display = 'block';
+    }
+  </script>
 
   <!-- About Section -->
   <section id="about">
