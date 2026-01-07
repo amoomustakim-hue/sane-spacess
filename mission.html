@@ -113,6 +113,7 @@
     </div>
   </nav>
 
+  <button id="backToTop" title="Go to top"><i class="fas fa-arrow-up"></i></button>
   <script src="index.js"></script>
 
   <!-- Hero -->
@@ -130,7 +131,7 @@
   <section class="mission-section">
     <div class="container text-light">
       <div class="row text-center mb-5">
-        <h2 class="fw-bold text-purple">Why Join Us?</h2>
+        <h2 class="fw-bold text-white">Why Join Us?</h2>
         <p class="text-light">
           At SaneSpace, every hand, every voice, and every heart matters.
           Whether you want to volunteer, support, or simply belong — you have
@@ -176,14 +177,15 @@
     <div class="container">
       <div class="row text-center mb-4">
         <h2 class="fw-bold text-purple">Get Started</h2>
-        <p class="text-muted">
+        <p class="text-muted text-danger">
           Fill out the form below to join our mission today.
         </p>
       </div>
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="card p-4">
-            <form>
+            <form action="https://formspree.io/f/mvzgeaqj"
+  method="POST">
               <div class="mb-3">
                 <label for="fullname" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="fullname" placeholder="Your full name" />
