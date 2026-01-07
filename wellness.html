@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Tools & Authors | SaneSpace</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .tool-card {
+            background: var(--bg-surface);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-light);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tool-header {
+            background: var(--primary-light);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-author {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .tool-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 2rem;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .tool-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Dark Mode */
+        body.dark-mode .tool-card {
+            background: var(--bg-surface);
+            border-color: var(--border-light);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Sane<span>Space</span></a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#about" class="nav-link">About Us</a></li>
+                <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
+                <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="bg-light" style="padding: 5rem 0 3rem;">
+        <div class="container text-center">
+            <h1 class="text-purple">Wellness Tools & Expert Voices</h1>
+            <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+                Discover transformative concepts, books, and practices from leading mental health experts and authors.
+            </p>
+        </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <section>
+        <div class="container">
+            <div class="tools-grid">
+
+                <!-- Card 1: James Clear -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-cubes tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Atomic Habits</h3>
+                        <span class="tool-author">James Clear</span>
+                        <p class="tool-desc">
+                            A framework for improving every day by building good habits and breaking bad ones. Small
+                            changes, remarkable results.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://jamesclear.com/atomic-habits" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://jamesclear.com/articles" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Read Articles</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 2: Bessel van der Kolk -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-brain tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">The Body Keeps the Score</h3>
+                        <span class="tool-author">Bessel van der Kolk</span>
+                        <p class="tool-desc">
+                            Explores how trauma shapes the body and brain, offering paths to recovery through
+                            self-awareness and body-based therapies.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.besselvanderkolk.com/resources/the-body-keeps-the-score"
+                                target="_blank" class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.besselvanderkolk.com/resources" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Resources</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 3: Brené Brown -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-heart-open tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Daring Greatly</h3>
+                        <span class="tool-author">Brené Brown</span>
+                        <p class="tool-desc">
+                            Emphasizes the power of vulnerability as a measure of courage and a path to connection,
+                            belonging, and authentic living.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://brenebrown.com/book/daring-greatly/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://brenebrown.com/articles/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Articles & Pods</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 4: Eckhart Tolle -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-spa tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">The Power of Now</h3>
+                        <span class="tool-author">Eckhart Tolle</span>
+                        <p class="tool-desc">
+                            A guide to spiritual enlightenment, focusing on living in the present moment to free
+                            yourself from anxiety and ego.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://eckharttolle.com/power-of-now-excerpt/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://eckharttolle.com/teachings/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Teachings</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 5: Carol Dweck -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-seedling tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Mindset</h3>
+                        <span class="tool-author">Carol S. Dweck</span>
+                        <p class="tool-desc">
+                            Discover the power of a "Growth Mindset"—the belief that abilities can be developed—to
+                            achieve success in every area of life.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.penguinrandomhouse.com/books/44330/mindset-by-carol-s-dweck-phd/"
+                                target="_blank" class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.ted.com/speakers/carol_dweck" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Watch TED</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 6: Viktor Frankl -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-compass tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Man's Search for Meaning</h3>
+                        <span class="tool-author">Viktor E. Frankl</span>
+                        <p class="tool-desc">
+                            A profound memoir and psychological exploration of finding meaning and purpose even in the
+                            most difficult suffering.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.goodreads.com/book/show/4069.Man_s_Search_for_Meaning" target="_blank"
+                                class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.logotherapyinstitute.org/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Institute</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="#" class="logo"
+                        style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+                    <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for
+                        you.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="conditions.html">Conditions A-Z</a></li>
+                        <li><a href="exercises.html">Exercises</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="crisis.html">Crisis Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
