@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Resources | SaneSpace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .crisis-card {
+            background: var(--bg-surface);
+            border-left: 5px solid #EF4444;
+            /* Red for alert */
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .crisis-card h3 {
+            color: #EF4444;
+            margin-bottom: 1rem;
+        }
+
+        .hotline-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: block;
+            margin: 1rem 0;
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode .crisis-card {
+            background: var(--bg-surface);
+            box-shadow: none;
+            border: 1px solid var(--border-light);
+            border-left: 5px solid #EF4444;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Sane<span>Space</span></a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#about" class="nav-link">About Us</a></li>
+                <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
+                <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="bg-light" style="padding: 4rem 0;">
+        <div class="container text-center">
+            <h1 style="color: #EF4444;">Crisis Resources</h1>
+            <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+                If you or someone you know is in immediate danger, please call 911 or visit your nearest emergency room
+                immediately.
+            </p>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <section>
+        <div class="container" style="max-width: 800px;">
+
+            <div class="crisis-card">
+                <h3><i class="fas fa-phone-alt"></i> National Suicide Prevention Lifeline</h3>
+                <p>Available 24 hours a day, 7 days a week. Free and confidential support.</p>
+                <a href="tel:988" class="hotline-number">988</a>
+                <p>Or call <a href="tel:1-800-273-8255" style="color: var(--primary);">1-800-273-8255</a></p>
+            </div>
+
+            <div class="crisis-card" style="border-left-color: var(--primary);">
+                <h3 style="color: var(--primary);"><i class="fas fa-comment-dots"></i> Crisis Text Line</h3>
+                <p>Text HOME to 741741 to connect with a Crisis Counselor.</p>
+                <a href="sms:741741" class="hotline-number">Text HOME to 741741</a>
+            </div>
+
+            <div class="crisis-card" style="border-left-color: var(--secondary);">
+                <h3 style="color: var(--secondary);"><i class="fas fa-globe"></i> International Resources</h3>
+                <p>If you are outside the United States, please contact your local emergency services or find a hotline
+                    near you.</p>
+                <br>
+                <a href="https://www.befrienders.org/" target="_blank" class="btn btn-outline">Find International
+                    Helplines</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="#" class="logo"
+                        style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+                    <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for
+                        you.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="conditions.html">Conditions A-Z</a></li>
+                        <li><a href="exercises.html">Exercises</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="crisis.html">Crisis Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
