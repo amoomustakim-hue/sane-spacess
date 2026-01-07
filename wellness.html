@@ -133,13 +133,20 @@
             <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
                 Discover transformative concepts, books, and practices from leading mental health experts and authors.
             </p>
+            <!-- Search Bar -->
+            <div style="max-width: 500px; margin: 2rem auto 0; position: relative;">
+                <input type="text" id="authorSearch" placeholder="Search authors, books, or topics..."
+                    style="width: 100%; padding: 1rem 1.5rem; border-radius: 2rem; border: 1px solid var(--border-light); font-size: 1rem; box-shadow: var(--shadow-sm); outline: none;">
+                <i class="fas fa-search"
+                    style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            </div>
         </div>
     </section>
 
     <!-- Tools Grid -->
     <section>
         <div class="container">
-            <div class="tools-grid">
+            <div class="tools-grid" id="toolsGrid">
 
                 <!-- Card 1: James Clear -->
                 <article class="tool-card">
@@ -267,6 +274,133 @@
                     </div>
                 </article>
 
+                <!-- Card 7: Daniel Kahneman -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-brain tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Thinking, Fast and Slow</h3>
+                        <span class="tool-author">Daniel Kahneman</span>
+                        <p class="tool-desc">
+                            A tour of the mind that explains the two systems that drive the way we think: System 1
+                            (fast, intuitive) and System 2 (slow, deliberative).
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.goodreads.com/book/show/11468377-thinking-fast-and-slow"
+                                target="_blank" class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://scholar.princeton.edu/kahneman/home" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Research</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 8: Susan Cain -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-volume-mute tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Quiet</h3>
+                        <span class="tool-author">Susan Cain</span>
+                        <p class="tool-desc">
+                            The Power of Introverts in a World That Can't Stop Talking. Validates the introverted
+                            experience and their valuable contributions.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.quietrev.com/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.ted.com/speakers/susan_cain" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Watch TED</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 9: Matthew Walker -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-bed tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Why We Sleep</h3>
+                        <span class="tool-author">Matthew Walker</span>
+                        <p class="tool-desc">
+                            Unlocking the Power of Sleep and Dreams. A deep dive into how sleep affects every aspect of
+                            our physical and mental health.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.sleepdiplomat.com/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.masterclass.com/classes/matthew-walker-teaches-the-science-of-better-sleep"
+                                target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Learn More</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 10: Nedra Glover Tawwab -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-user-shield tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Set Boundaries, Find Peace</h3>
+                        <span class="tool-author">Nedra Glover Tawwab</span>
+                        <p class="tool-desc">
+                            A guide to reclaiming yourself. Learn how to set healthy boundaries to improve relationships
+                            and reduce burnout.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.nedratawwab.com/set-boundaries-find-peace" target="_blank"
+                                class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.nedratawwab.com/blog" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Read Blog</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 11: Lori Gottlieb -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-comments tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Maybe You Should Talk to Someone</h3>
+                        <span class="tool-author">Lori Gottlieb</span>
+                        <p class="tool-desc">
+                            A therapist, her therapist, and our lives revealed. A funny and thought-provoking look into
+                            the therapeutic process.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://lorigottlieb.com/books/maybe-you-should-talk-to-someone/" target="_blank"
+                                class="tool-btn" style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://lorigottlieb.com/podcast/" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Listen</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 12: James Nestor -->
+                <article class="tool-card">
+                    <div class="tool-header">
+                        <i class="fas fa-lungs tool-icon"></i>
+                    </div>
+                    <div class="tool-body">
+                        <h3 class="tool-title">Breath</h3>
+                        <span class="tool-author">James Nestor</span>
+                        <p class="tool-desc">
+                            The New Science of a Lost Art. Explores how the way we breathe affects the weight, sleep,
+                            and overall health of our bodies.
+                        </p>
+                        <div class="tool-links" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="https://www.mrjamesnestor.com/breath" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem;">View Book</a>
+                            <a href="https://www.mrjamesnestor.com/breathing-videos" target="_blank" class="tool-btn"
+                                style="flex: 1; font-size: 0.8rem; background: var(--secondary);">Exercises</a>
+                        </div>
+                    </div>
+                </article>
+
             </div>
         </div>
     </section>
@@ -307,6 +441,39 @@
     </footer>
 
     <script src="index.js"></script>
+    <script>
+        // Simple search filter
+        const searchInput = document.getElementById('authorSearch');
+
+        function filterCards() {
+            const filter = searchInput.value.toLowerCase();
+            const cards = document.querySelectorAll('.tool-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('.tool-title').textContent.toLowerCase();
+                const author = card.querySelector('.tool-author').textContent.toLowerCase();
+                const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
+
+                if (title.includes(filter) || author.includes(filter) || desc.includes(filter)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        searchInput.addEventListener('keyup', filterCards);
+
+        // Check for URL query param
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q');
+            if (query) {
+                searchInput.value = query;
+                filterCards();
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -225,7 +225,7 @@
         <!-- Service 2 -->
         <article class="service-card">
           <div class="service-img">
-            <img src="https://i.pinimg.com/73x/55/77/3f/55773f8940a779066961deaff2360dfb.jpg" alt="Community Support">
+            <img src="https://i.pinimg.com/1200x/66/f5/d5/66f5d56bf887ba01409619d62a9ea20b.jpg" alt="Community Support">
           </div>
           <div class="service-body">
             <h3>Community Support</h3>
@@ -235,17 +235,7 @@
           </div>
         </article>
 
-        <!-- New Service Card -->
-        <article class="service-card">
-          <div class="service-img">
-            <img src="https://i.pinimg.com/736x/0c/1a/1a/0c1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a.jpg" alt="Tools & Authors">
-          </div>
-          <div class="service-body">
-            <h3>Tools & Authors</h3>
-            <p>Explore a curated library of mental health tools, books, and expert wisdom to guide your journey.</p>
-            <a href="wellness.html" class="btn btn-outline">Explore Library</a>
-          </div>
-        </article>
+
 
         <!-- Service 3 -->
         <article class="service-card">
@@ -272,6 +262,50 @@
             <a href="exercises.html" class="btn btn-outline">Explore Exercises</a>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Wellness Tools Section -->
+  <section class="bg-light">
+    <div class="container">
+      <div class="about-split reverse-mobile">
+        <div class="about-text">
+          <h2 class="text-purple">Wellness Tools & Expert Voices</h2>
+          <p class="mb-4">
+            Mental health is a journey of continuous learning. We have curated a library of transformative books, tools,
+            and insights from the world's leading experts.
+          </p>
+
+          <div
+            style="background: var(--bg-surface); padding: 2.5rem; border-radius: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);">
+            <h4 class="mb-3">Find Your Resource</h4>
+            <form
+              onsubmit="event.preventDefault(); const v=this.querySelector('input').value; window.location.href='wellness.html'+(v?'?q='+encodeURIComponent(v):'')"
+              style="position: relative; max-width: 100%;">
+              <input type="text" class="form-control" placeholder="Search authors, topics, or books..."
+                style="border-radius: 3rem; height: 60px; padding-left: 1.5rem; padding-right: 60px; border: 2px solid var(--border-light); font-size: 1.1rem; box-shadow: none;">
+              <button type="submit"
+                style="position: absolute; right: 5px; top: 5px; height: 50px; width: 50px; border-radius: 50%; border: none; background: var(--primary); color: white; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+            <p class="text-muted small mt-3 mb-0">Popular: <a href="wellness.html?q=trauma">Trauma</a>, <a
+                href="wellness.html?q=habits">Habits</a>, <a href="wellness.html?q=anxiety">Anxiety</a></p>
+          </div>
+
+          <div class="mt-4">
+            <a href="wellness.html" class="btn btn-primary">Browse Full Library <i
+                class="fas fa-arrow-right ms-2"></i></a>
+          </div>
+        </div>
+        <div class="about-img">
+          <img
+            src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="Wellness Tools">
+        </div>
       </div>
     </div>
   </section>

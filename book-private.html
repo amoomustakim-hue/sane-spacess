@@ -106,29 +106,30 @@
               Choose your preferred date, time, and session type.
             </p>
             <!-- Booking Form -->
-            <form>
+            <form action="https://formspree.io/f/mojvgdeb" method="POST">
               <!-- Full Name -->
               <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
-                <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
               </div>
 
               <!-- Email -->
               <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email"
+                  required>
               </div>
 
               <!-- Phone -->
               <div class="mb-3">
                 <label for="phone" class="form-label">Phone Number</label>
-                <input type="tel" id="phone" class="form-control" placeholder="+234 702 643 6480" required>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="+234 702 643 6480" required>
               </div>
 
               <!-- Session Type -->
               <div class="mb-3">
                 <label for="sessionType" class="form-label">Session Type</label>
-                <select id="sessionType" class="form-select" required>
+                <select id="sessionType" name="sessionType" class="form-select" required>
                   <option value="">-- Select --</option>
                   <option>Video Call</option>
                   <option>Phone Call</option>
@@ -139,13 +140,13 @@
               <!-- Date -->
               <div class="mb-3">
                 <label for="date" class="form-label">Preferred Date</label>
-                <input type="date" id="date" class="form-control" required>
+                <input type="date" id="date" name="date" class="form-control" required>
               </div>
 
               <!-- Time -->
               <div class="mb-3">
                 <label for="time" class="form-label">Preferred Time</label>
-                <input type="time" id="time" class="form-control" required>
+                <input type="time" id="time" name="time" class="form-control" required>
               </div>
 
               <!-- Notes -->
