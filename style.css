@@ -429,6 +429,42 @@ footer {
     color: #9CA3AF;
 }
 
+/* Mood Section */
+.mood-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+    /* Gap is handled by response box margin */
+}
+
+.mood-response {
+    display: none;
+    /* Initially hidden */
+    background: var(--bg-surface);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    max-width: 600px;
+    margin: 2rem auto 0;
+    /* The requested gap */
+    border: 1px solid var(--border-light);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive */
 /* Mobile Navigation & Responsive */
 .hamburger {
