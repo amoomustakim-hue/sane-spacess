@@ -15,26 +15,26 @@
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container nav-container">
-      <a href="#" class="logo">Sane<span>Space</span></a>
+      <a href="index.html" class="logo">Sane<span>Space</span></a>
       <div class="hamburger" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </div>
       <ul class="nav-links">
-        <li><a href="#about" class="nav-link">About Us</a></li>
+        <li><a href="index.html#about" class="nav-link">About Us</a></li>
         <li><a href="exercises.html" class="nav-link">Exercises</a></li>
-        <li><a href="#ourservices" class="nav-link">Services</a></li>
+        <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
         <li><a href="contact.html" class="nav-link">Contact</a></li>
         <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+        <li>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        </li>
       </ul>
     </div>
   </nav>
 
-  <script>
-    function toggleMenu() {
-      const navLinks = document.querySelector('.nav-links');
-      navLinks.classList.toggle('active');
-    }
-  </script>
+  <script src="index.js"></script>
 
   <!-- Hero Section -->
   <header class="hero">
@@ -51,7 +51,8 @@
           </div>
         </div>
         <div class="hero-img">
-          <img src="https://i.pinimg.com/1200x/df/07/95/df079583ef954d962f31105fec8495e1.jpg" alt="Peaceful mind illustration">
+          <img src="https://i.pinimg.com/1200x/df/07/95/df079583ef954d962f31105fec8495e1.jpg"
+            alt="Peaceful mind illustration">
         </div>
       </div>
     </div>
