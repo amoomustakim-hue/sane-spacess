@@ -47,7 +47,7 @@
 
         .condition-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 1.5rem;
         }
 
@@ -119,13 +119,15 @@
         }
 
         body.dark-mode .resource-link {
-            border-color: var(--primary-light);
-            color: var(--primary-light);
+            border-color: var(--primary);
+            color: #E9D5FF;
+            /* Light purple for better visibility */
         }
 
         body.dark-mode .resource-link:hover {
-            background: var(--primary-light);
-            color: var(--bg-surface);
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
     </style>
 </head>
