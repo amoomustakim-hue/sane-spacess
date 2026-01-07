@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditions A-Z | SaneSpace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .az-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .az-nav a {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: var(--bg-surface);
+            color: var(--primary);
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .az-nav a:hover,
+        .az-nav a.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .condition-group {
+            margin-bottom: 3rem;
+        }
+
+        .condition-group h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .condition-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .condition-card {
+            background: var(--bg-surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .condition-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .condition-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .condition-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode .az-nav a {
+            background: var(--bg-alt);
+            border-color: var(--border-light);
+        }
+
+        body.dark-mode .az-nav a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Sane<span>Space</span></a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#about" class="nav-link">About Us</a></li>
+                <li><a href="conditions.html" class="nav-link active">Conditions A-Z</a></li>
+                <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+                <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="bg-light" style="padding: 4rem 0;">
+        <div class="container text-center">
+            <h1 class="text-purple">Mental Health Conditions A-Z</h1>
+            <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+                A comprehensive guide to understanding various mental health conditions.
+                Find information and resources for each condition below.
+            </p>
+        </div>
+    </section>
+
+    <!-- A-Z Content -->
+    <section>
+        <div class="container">
+            <!-- Alphabet Nav -->
+            <div class="az-nav">
+                <a href="#A">A</a>
+                <a href="#B">B</a>
+                <a href="#D">D</a>
+                <a href="#G">G</a>
+                <a href="#O">O</a>
+                <a href="#P">P</a>
+                <a href="#S">S</a>
+            </div>
+
+            <!-- Conditions -->
+            <div id="A" class="condition-group">
+                <h2>A</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>ADHD (Attention Deficit Hyperactivity Disorder)</h3>
+                        <p>A neurodevelopmental disorder affecting attention, hyperactivity, and impulsivity.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Anxiety Disorders</h3>
+                        <p>A group of mental disorders characterized by significant feelings of anxiety and fear.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Autism Spectrum Disorder (ASD)</h3>
+                        <p>A developmental disorder that affects communication and behavior.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="B" class="condition-group">
+                <h2>B</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>Bipolar Disorder</h3>
+                        <p>A mental health condition that causes extreme mood swings that include emotional highs (mania
+                            or hypomania) and lows (depression).</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Borderline Personality Disorder (BPD)</h3>
+                        <p>A mental health disorder that impacts the way you think and feel about yourself and others.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="D" class="condition-group">
+                <h2>D</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>Depression (Major Depressive Disorder)</h3>
+                        <p>A mood disorder that causes a persistent feeling of sadness and loss of interest.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Dissociative Disorders</h3>
+                        <p>Mental disorders that involve experiencing a disconnection and lack of continuity between
+                            thoughts, memories, surroundings, actions and identity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="G" class="condition-group">
+                <h2>G</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>Generalized Anxiety Disorder (GAD)</h3>
+                        <p>Severe, ongoing anxiety that interferes with daily activities.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="O" class="condition-group">
+                <h2>O</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>OCD (Obsessive-Compulsive Disorder)</h3>
+                        <p>A pattern of unwanted thoughts and fears (obsessions) that lead you to do repetitive
+                            behaviors (compulsions).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="P" class="condition-group">
+                <h2>P</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>Panic Disorder</h3>
+                        <p>An anxiety disorder characterized by reoccurring unexpected panic attacks.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>PTSD (Post-Traumatic Stress Disorder)</h3>
+                        <p>A disorder triggered by a terrifying event — either experiencing it or witnessing it.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Postpartum Depression</h3>
+                        <p>Depression that occurs after childbirth.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="S" class="condition-group">
+                <h2>S</h2>
+                <div class="condition-list">
+                    <div class="condition-card">
+                        <h3>Schizophrenia</h3>
+                        <p>A serious mental disorder in which people interpret reality abnormally.</p>
+                    </div>
+                    <div class="condition-card">
+                        <h3>Social Anxiety Disorder</h3>
+                        <p>A chronic mental health condition in which social interactions cause irrational anxiety.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="#" class="logo"
+                        style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+                    <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for
+                        you.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="conditions.html">Conditions A-Z</a></li>
+                        <li><a href="exercises.html">Exercises</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Crisis Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

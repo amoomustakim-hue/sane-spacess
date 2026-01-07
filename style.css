@@ -192,6 +192,12 @@ img {
     border-bottom: 1px solid var(--border-light);
 }
 
+body.dark-mode .navbar {
+    background-color: rgba(17, 24, 39, 0.95);
+    /* Dark background for navbar */
+    border-bottom-color: var(--border-light);
+}
+
 .nav-container {
     display: flex;
     justify-content: space-between;

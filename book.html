@@ -22,6 +22,36 @@
     padding-left: 0;
     margin-bottom: 0;
   }
+
+  /* Dark Mode Overrides */
+  body.dark-mode {
+    background: var(--bg-body);
+    color: var(--text-main);
+  }
+
+  body.dark-mode .bg-light {
+    background-color: var(--bg-body) !important;
+  }
+
+  body.dark-mode .bg-white {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-main);
+  }
+
+  body.dark-mode h2 {
+    color: var(--text-main);
+  }
+
+  body.dark-mode .form-label {
+    color: var(--text-muted);
+  }
+
+  body.dark-mode .form-control,
+  body.dark-mode .form-select {
+    background-color: var(--bg-alt);
+    border-color: var(--border-light);
+    color: var(--text-main);
+  }
 </style>
 
 <body>
@@ -35,6 +65,7 @@
       </div>
       <ul class="nav-links">
         <li><a href="index.html#about" class="nav-link">About Us</a></li>
+        <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
         <li><a href="exercises.html" class="nav-link">Exercises</a></li>
         <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
         <li><a href="contact.html" class="nav-link">Contact</a></li>

@@ -32,6 +32,36 @@
     label {
       font-weight: 500;
     }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      background: var(--bg-body);
+      color: var(--text-main);
+    }
+
+    body.dark-mode .card {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    body.dark-mode .text-purple {
+      color: var(--primary-light) !important;
+    }
+
+    body.dark-mode .fw-bold.text-purple {
+      color: var(--primary-light) !important;
+    }
+
+    body.dark-mode .text-muted {
+      color: var(--text-muted) !important;
+    }
+
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+      background-color: var(--bg-alt);
+      border-color: var(--border-light);
+      color: var(--text-main);
+    }
   </style>
 </head>
 
@@ -45,6 +75,7 @@
       </div>
       <ul class="nav-links">
         <li><a href="index.html#about" class="nav-link">About Us</a></li>
+        <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
         <li><a href="exercises.html" class="nav-link">Exercises</a></li>
         <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
         <li><a href="contact.html" class="nav-link">Contact</a></li>
