@@ -1,4 +1,4 @@
-export async function sendMentalHealthMessage(message, category) {
+exports.sendMentalHealthMessage = async function (message, category) {
   const res = await fetch("/.netlify/functions/mentalHealthAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -6,8 +6,9 @@ export async function sendMentalHealthMessage(message, category) {
   });
 
   return res.json();
-}
-export async function handler(event) {
+};
+
+exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -32,7 +33,7 @@ export async function handler(event) {
       body: JSON.stringify({ inputs: prompt })
     });
 
-    const data = await res.json();  
+    const data = await res.json();
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -40,11 +41,11 @@ export async function handler(event) {
       })
     };
     
-  } catch {
+  } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ reply: "Service temporarily unavailable." })
+      body: JSON.stringify({ reply: "Service temporarily unavailable.", error: String(err) })
     };
   }
-}
+};
 

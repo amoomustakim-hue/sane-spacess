@@ -1,4 +1,4 @@
-export async function handler(event) {
+exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
@@ -32,22 +32,24 @@ export async function handler(event) {
       })
     };
 
-  } catch {
+  } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ reply: "Service temporarily unavailable." })
+      body: JSON.stringify({ reply: "Service temporarily unavailable.", error: String(err) })
     };
   }
-}
-export async function sendMentalHealthMessage(message, category) {
+};
+
+// Client helper (keeps same name but exported for CommonJS)
+exports.sendMentalHealthMessage = async function (message, category) {
   const res = await fetch("/.netlify/functions/mentalHealthAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, category })
   });
-  
+
   return res.json();
-} 
+};
 
 
 
