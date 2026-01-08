@@ -54,3 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Client helper to call Netlify function from browser
+async function sendMentalHealthMessage(message, category) {
+    const res = await fetch('/.netlify/functions/mentalHealthAI', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, category })
+    });
+
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error('Request failed: ' + res.status + ' - ' + text);
+    }
+
+    return res.json();
+}
+
+window.sendMentalHealthMessage = sendMentalHealthMessage;
