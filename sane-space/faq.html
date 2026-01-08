@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | SaneSpace</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .accordion-item {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: var(--bg-surface);
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.5rem;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: var(--bg-alt);
+        }
+
+        .accordion-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            color: var(--text-muted);
+        }
+
+        .accordion-content.active {
+            padding-bottom: 1.5rem;
+            max-height: 500px;
+            /* Arbitrary large number */
+        }
+
+        .icon-rotate {
+            transition: transform 0.3s ease;
+        }
+
+        .active .icon-rotate {
+            transform: rotate(180deg);
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode .accordion-item {
+            border-color: var(--border-light);
+            background: var(--bg-surface);
+        }
+
+        body.dark-mode .accordion-header {
+            color: var(--text-main);
+        }
+
+        body.dark-mode .accordion-header:hover {
+            background: var(--bg-alt);
+        }
+
+        body.dark-mode .accordion-content {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Sane<span>Space</span></a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#about" class="nav-link">About Us</a></li>
+                <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
+                <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="bg-light" style="padding: 4rem 0;">
+        <div class="container text-center">
+            <h1 class="text-purple">Frequently Asked Questions</h1>
+            <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+                Common questions about SaneSpace, our services, and mental health.
+            </p>
+        </div>
+    </section>
+
+    <!-- FAQ Content -->
+    <section>
+        <div class="container" style="max-width: 800px;">
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    What is SaneSpace?
+                    <i class="fas fa-chevron-down icon-rotate"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>SaneSpace is a safe digital sanctuary dedicated to mental wellness. We provide resources,
+                        community support, and professional therapy connections to help you navigate life's challenges.
+                    </p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Is SaneSpace free to use?
+                    <i class="fas fa-chevron-down icon-rotate"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Many of our resources, such as the conditions library, exercises, and community support groups,
+                        are free. Professional private therapy sessions are paid services.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    How do I join the community?
+                    <i class="fas fa-chevron-down icon-rotate"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Simply click on the "Join Community" button in the navigation bar, fill out the registration
+                        form, and you'll be welcomed into our supportive network.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Are my sessions confidential?
+                    <i class="fas fa-chevron-down icon-rotate"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Absolutely. Confidentiality is one of our core values. All private therapy sessions are strictly
+                        confidential between you and your therapist, adhering to HIPAA standards.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    What if I need immediate help?
+                    <i class="fas fa-chevron-down icon-rotate"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>If you are in a crisis, please visit our <a href="crisis.html"
+                            style="color: var(--primary);">Crisis Resources</a> page immediately or dial your local
+                        emergency number (112 if you're around Nigeria).</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="#" class="logo"
+                        style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+                    <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for
+                        you.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="conditions.html">Conditions A-Z</a></li>
+                        <li><a href="exercises.html">Exercises</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="crisis.html">Crisis Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="backToTop" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+    <script src="index.js"></script>
+    <script>
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('active');
+
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

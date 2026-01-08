@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | SaneSpace</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Nav (Simplified for subpages) -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">Sane<span>Space</span></a>
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html#about" class="nav-link">About Us</a></li>
+        <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
+        <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+        <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
+        <li><a href="contact.html" class="nav-link active">Contact</a></li>
+        <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+        <li>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <button id="backToTop" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+  <script src="index.js"></script>
+
+  <!-- Header -->
+  <section class="bg-light" style="padding: 4rem 0;">
+    <div class="container text-center">
+      <h1 class="text-purple">Contact Us</h1>
+      <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+        We’re here to support you. Whether you have a question, need assistance, or just want to share your story, reach
+        out anytime.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Content -->
+  <section>
+    <div class="container">
+      <div class="about-split" style="align-items: flex-start;">
+
+        <!-- Info Card -->
+        <div class="feature-card" style="text-align: left;">
+          <h3 class="text-purple" style="margin-bottom: 1.5rem;">Get in Touch</h3>
+
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: start;">
+            <div style="color: var(--primary); font-size: 1.25rem; width: 24px;"><i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <h5 style="margin-bottom: 0.25rem;">Address</h5>
+              <p class="text-muted">Akoka, Lagos, Nigeria</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: start;">
+            <div style="color: var(--primary); font-size: 1.25rem; width: 24px;"><i class="fas fa-phone"></i></div>
+            <div>
+              <h5 style="margin-bottom: 0.25rem;">Phone</h5>
+              <p class="text-muted">+234 810 075 0041</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: start;">
+            <div style="color: var(--primary); font-size: 1.25rem; width: 24px;"><i class="fas fa-envelope"></i></div>
+            <div>
+              <h5 style="margin-bottom: 0.25rem;">Email</h5>
+              <p class="text-muted">support@sanespace.com</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: start;">
+            <div style="color: var(--primary); font-size: 1.25rem; width: 24px;"><i class="fas fa-clock"></i></div>
+            <div>
+              <h5 style="margin-bottom: 0.25rem;">Hours</h5>
+              <p class="text-muted">Mon – Sat: 9am – 6pm</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="feature-card"
+          style="text-align: left; padding: 3rem; border: 1px solid var(--border-light); box-shadow: var(--shadow-md);">
+          <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Send a Message</h3>
+          <p class="text-muted" style="margin-bottom: 2rem;">We typically reply within 24 hours.</p>
+
+          <form id="contactForm" action="https://formspree.io/f/mojvgdeb" method="POST">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="name"
+                style="font-weight: 600; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem; display: block;">Full
+                Name</label>
+              <div style="position: relative;">
+                <i class="fas fa-user"
+                  style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="text" id="name" name="name"
+                  style="width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: 0.75rem; border: 2px solid var(--border-light); background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: 0.3s;"
+                  placeholder="e.g. Jane Doe" required
+                  onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px var(--primary-light)'"
+                  onblur="this.style.borderColor='var(--border-light)'; this.style.boxShadow='none'">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="email"
+                style="font-weight: 600; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem; display: block;">Email
+                Address</label>
+              <div style="position: relative;">
+                <i class="fas fa-envelope"
+                  style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="email" id="email" name="email"
+                  style="width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: 0.75rem; border: 2px solid var(--border-light); background: var(--bg-surface); color: var(--text-main); font-family: inherit; transition: 0.3s;"
+                  placeholder="jane@example.com" required
+                  onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px var(--primary-light)'"
+                  onblur="this.style.borderColor='var(--border-light)'; this.style.boxShadow='none'">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+              <label for="message"
+                style="font-weight: 600; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem; display: block;">Message</label>
+              <div style="position: relative;">
+                <i class="fas fa-comment-alt"
+                  style="position: absolute; left: 1.25rem; top: 1.25rem; color: var(--text-muted);"></i>
+                <textarea id="message" name="message"
+                  style="width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: 0.75rem; border: 2px solid var(--border-light); background: var(--bg-surface); color: var(--text-main); font-family: inherit; min-height: 150px; resize: vertical; transition: 0.3s;"
+                  placeholder="How can we help you?" required
+                  onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px var(--primary-light)'"
+                  onblur="this.style.borderColor='var(--border-light)'; this.style.boxShadow='none'"></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary"
+              style="width: 100%; padding: 1rem; border-radius: 0.75rem; font-weight: 600; letter-spacing: 0.5px; display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+              <span>Send Message</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="#" class="logo" style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+          <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for you.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="conditions.html">Conditions A-Z</a></li>
+            <li><a href="exercises.html">Exercises</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="crisis.html">Crisis Resources</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple frontend script to handle form submission if backend isn't running or purely aesthetic
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+      // If we want to prevent default and show an alert since backend might not be there
+      e.preventDefault();
+      alert("Thank you! Your message has been sent. (Mock)");
+      this.reset();
+    });
+  </script>
+
+</body>
+
+</html>

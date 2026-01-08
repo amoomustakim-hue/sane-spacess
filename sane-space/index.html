@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaneSpace | Your Mental Wellness Sanctuary</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body class="md">
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">Sane<span>Space</span></a>
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html#about" class="nav-link">About Us</a></li>
+        <li><a href="conditions.html" class="nav-link">Conditions A-Z</a></li>
+        <li><a href="exercises.html" class="nav-link">Exercises</a></li>
+        <li><a href="index.html#ourservices" class="nav-link">Services</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="join.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Join Community</a></li>
+        <li>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <button id="backToTop" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+  <script src="index.js"></script>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Welcome to Sane<span>Space</span></h1>
+          <p class="lead">Your Safe Space in the daily chaos. We offer a digital sanctuary for healing, growth, and
+            support. Whether you're seeking guidance, resources, or just someone who understands, you're not alone here.
+          </p>
+          <div class="flex gap-sm">
+            <a href="#ourservices" class="btn btn-primary">Start Healing</a>
+            <a href="#about" class="btn btn-outline">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-img">
+          <img src="https://i.pinimg.com/1200x/df/07/95/df079583ef954d962f31105fec8495e1.jpg"
+            alt="Peaceful mind illustration">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Daily Check-in -->
+  <section class="bg-light text-center" style="padding: 3rem 0;">
+    <div class="container">
+      <h4 style="color: var(--primary); margin-bottom: 0.5rem;">How are you feeling today?</h4>
+      <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        Check in with yourself. Select an option below to get personalized support right now.
+      </p>
+
+      <div class="mood-container">
+        <button class="mood-btn btn btn-primary" onclick="handleMood('anxious')">😰 Anxious</button>
+        <button class="mood-btn btn btn-primary" onclick="handleMood('sad')">😔 Sad</button>
+        <button class="mood-btn btn btn-primary" onclick="handleMood('stressed')">🤯 Stressed</button>
+        <button class="mood-btn btn btn-primary" onclick="handleMood('good')">🙂 Good</button>
+      </div>
+
+      <div id="mood-response-box" class="mood-response">
+        <h5 id="response-title" class="fw-bold mb-2"></h5>
+        <p id="response-text" class="text-muted mb-3"></p>
+        <a id="response-link" href="#" class="btn btn-primary btn-sm">Take Action</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function handleMood(mood) {
+      const box = document.getElementById('mood-response-box');
+      const title = document.getElementById('response-title');
+      const text = document.getElementById('response-text');
+      const link = document.getElementById('response-link');
+
+      // Reset button styles
+      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      let data = {};
+
+      if (mood === 'anxious') {
+        data = {
+          title: "Take a deep breath.",
+          text: "Anxiety can feel overwhelming, but you are safe. Try our 4-7-8 breathing exercise to calm your nervous system immediately.",
+          linkUrl: "exercises.html",
+          linkText: "Start Breathing Exercise"
+        };
+      } else if (mood === 'sad') {
+        data = {
+          title: "It's okay not to be okay.",
+          text: "Sadness is a heavy emotion, but you don't have to carry it alone. Our community is here to listen and support you.",
+          linkUrl: "join.html",
+          linkText: "Connect with Community"
+        };
+      } else if (mood === 'stressed') {
+        data = {
+          title: "One step at a time.",
+          text: "Stress often comes from trying to do everything at once. Let's pause and organize your thoughts, or just vent.",
+          linkUrl: "contact.html",
+          linkText: "Talk to Someone"
+        };
+      } else if (mood === 'good') {
+        data = {
+          title: "That's wonderful!",
+          text: "Holding onto positive energy is a practice too. Why not share your good vibes or learn how to maintain this balance?",
+          linkUrl: "mission.html",
+          linkText: "Share the Love"
+        };
+      }
+
+      title.textContent = data.title;
+      text.textContent = data.text;
+      link.href = data.linkUrl;
+      link.textContent = data.linkText;
+
+      box.style.display = 'block';
+    }
+  </script>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <div class="about-split">
+        <div class="about-img">
+          <!-- Using a high quality placeholder if original isn't great, but keeping consistent with existing flows -->
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216" alt="Support Group" class="img-fluid">
+        </div>
+        <div class="about-text">
+          <h2 class="text-purple">Who We Are</h2>
+          <p>At <strong>SaneSpace</strong>, we believe mental health is just as important as physical health. We provide
+            a welcoming and confidential environment where individuals can explore their thoughts, emotions, and
+            challenges with professional support.</p>
+          <p>Our mission is to make mental health care accessible, compassionate, and community-driven. Whether it’s
+            private therapy, group sessions, or mindfulness exercises — we walk the journey with you.</p>
+          <br>
+          <div class="flex gap-sm">
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Confidential
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Professional
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle text-purple"></i> Inclusive
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Values -->
+  <section class="bg-light">
+    <div class="container">
+      <div class="section-title">
+        <h2 class="text-purple">Our Core Values</h2>
+        <p class="text-muted">The heart of everything we do at SaneSpace</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-heart"></i></div>
+          <h3>Compassion</h3>
+          <p>We listen, care, and respond with empathy in every interaction. meaningful connections start with
+            understanding.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3>Community</h3>
+          <p>A safe and inclusive space where everyone belongs. We believe in the power of shared experiences and
+            collective healing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+          <h3>Growth</h3>
+          <p>Encouraging personal healing, resilience, and lifelong learning. Your journey is unique, and we honor every
+            step.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="ourservices">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Services</h2>
+        <p class="text-muted">Comprehensive support tailored to your needs</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Service 1 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="https://i.pinimg.com/736x/42/c8/3e/42c83e72ce709c96b3979b067b37bd93.jpg" alt="Group Therapy">
+          </div>
+          <div class="service-body">
+            <h3>Group Therapy</h3>
+            <p>Healing happens best in community. Share experiences, learn from one another, and grow together in a safe
+              space guided by professionals.</p>
+            <a href="book.html" class="btn btn-outline">Book Session</a>
+          </div>
+        </article>
+
+        <!-- Service 2 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="https://i.pinimg.com/1200x/66/f5/d5/66f5d56bf887ba01409619d62a9ea20b.jpg" alt="Community Support">
+          </div>
+          <div class="service-body">
+            <h3>Community Support</h3>
+            <p>You are never alone. Join our supportive family to find encouragement and strength. Healing is a journey
+              we walk as one.</p>
+            <a href="join.html" class="btn btn-outline">Join Community</a>
+          </div>
+        </article>
+
+
+
+        <!-- Service 3 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="https://i.pinimg.com/736x/52/13/db/5213db6e9ea8b691933354638f283364.jpg" alt="Private Therapy">
+          </div>
+          <div class="service-body">
+            <h3>Private Therapy</h3>
+            <p>Confidential spaces to talk openly with licensed professionals. Tailored sessions to help you heal and
+              regain balance at your own pace.</p>
+            <a href="book-private.html" class="btn btn-outline">Book Private</a>
+          </div>
+        </article>
+
+        <!-- Service 4 -->
+        <article class="service-card">
+          <div class="service-img">
+            <img src="https://i.pinimg.com/1200x/ce/07/f8/ce07f8f6671d10645bfcaf4c58a3b2d7.jpg" alt="Meditation">
+          </div>
+          <div class="service-body">
+            <h3>Mindfulness</h3>
+            <p>Guided exercises designed to help you reduce stress and refocus your mind. Take a pause and support your
+              well-being.</p>
+            <a href="exercises.html" class="btn btn-outline">Explore Exercises</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Wellness Tools Section -->
+  <section class="bg-light">
+    <div class="container">
+      <div class="about-split reverse-mobile">
+        <div class="about-text">
+          <h2 class="text-purple">Wellness Tools & Expert Voices</h2>
+          <p class="mb-4">
+            Mental health is a journey of continuous learning. We have curated a library of transformative books, tools,
+            and insights from the world's leading experts.
+          </p>
+
+          <div
+            style="background: var(--bg-surface); padding: 2.5rem; border-radius: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);">
+            <h4 class="mb-3">Find Your Resource</h4>
+            <form
+              onsubmit="event.preventDefault(); const v=this.querySelector('input').value; window.location.href='wellness.html'+(v?'?q='+encodeURIComponent(v):'')"
+              style="position: relative; max-width: 100%;">
+              <input type="text" class="form-control" placeholder="Search authors, topics, or books..."
+                style="border-radius: 3rem; height: 60px; padding-left: 1.5rem; padding-right: 60px; border: 2px solid var(--border-light); font-size: 1.1rem; box-shadow: none;">
+              <button type="submit"
+                style="position: absolute; right: 5px; top: 5px; height: 50px; width: 50px; border-radius: 50%; border: none; background: var(--primary); color: white; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+            <p class="text-muted small mt-3 mb-0">Popular: <a href="wellness.html?q=trauma">Trauma</a>, <a
+                href="wellness.html?q=habits">Habits</a>, <a href="wellness.html?q=anxiety">Anxiety</a></p>
+          </div>
+
+          <div class="mt-4">
+            <a href="wellness.html" class="btn btn-primary">Browse Full Library <i
+                class="fas fa-arrow-right ms-2"></i></a>
+          </div>
+        </div>
+        <div class="about-img">
+          <img
+            src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="Wellness Tools">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section>
+    <div class="container">
+      <div class="cta-section">
+        <h2>Join Our Mission</h2>
+        <p class="mb-4" style="margin-bottom: 2rem;">Be part of a community dedicated to breaking stigma and supporting
+          mental wellness for all.</p>
+        <a href="mission.html" class="btn btn-white">Get Involved</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <a href="#" class="logo" style="color: white; margin-bottom: 1rem; display: block;">Sane<span>Space</span></a>
+          <p style="color: #9CA3AF;">A safe space for healing, growth, and mental wellness. We are here for you.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="conditions.html">Conditions A-Z</a></li>
+            <li><a href="index.html#ourservices">Services</a></li>
+            <li><a href="exercises.html">Exercises</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="crisis.html">Crisis Resources</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SaneSpace. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
