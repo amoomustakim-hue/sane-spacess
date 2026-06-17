@@ -8,7 +8,11 @@ import type { LanguageProfileDetected } from '@/lib/careMode'
 import { extractEmotionalMemory } from '@/lib/memoryExtraction'
 import { classifyRisk } from '@/lib/riskClassifier'
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+let groq: Groq | null = null
+function getGroq(): Groq {
+  if (!groq) groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+  return groq
+}
 
 // ─── Mapping helpers ─────────────────────────────────────────────────────────
 
@@ -453,7 +457,7 @@ You don't have to face this alone. Please make that call. 🌿`,
       })),
     ]
 
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroq().chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: openaiMessages,
       max_tokens: 400,
