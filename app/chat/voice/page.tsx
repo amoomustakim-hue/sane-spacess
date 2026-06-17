@@ -15,6 +15,25 @@ type Status = 'idle' | 'listening' | 'processing' | 'speaking'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySpeechRecognition = any
 
+type VoiceOption = { id: string; label: string; sub: string; provider: 'browser' | 'elevenlabs' }
+
+// Curated calm/reassuring premade ElevenLabs voices. Kept small since the
+// free tier is character-limited per month — only used when a user
+// explicitly picks one; default stays the free on-device browser voice.
+const VOICE_OPTIONS: VoiceOption[] = [
+  { id: 'browser', label: 'Default', sub: 'Free, on-device', provider: 'browser' },
+  { id: '21m00Tcm4TlvDq8ikWAM', label: 'Rachel', sub: 'Calm & warm', provider: 'elevenlabs' },
+  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Bella', sub: 'Soft & soothing', provider: 'elevenlabs' },
+  { id: 'ErXwobaYiN019PkySvjV', label: 'Antoni', sub: 'Gentle & reassuring', provider: 'elevenlabs' },
+]
+
+const VOICE_PREF_KEY = 'sane_voice_preference'
+
+// Tiny silent WAV — used to unlock <audio> playback on iOS/mobile the same
+// way the speechSynthesis primer unlocks browser TTS.
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10EAAAAAEAAQBAHwAAQB8AAAEACABkYXRhAAAAAA=='
+
 // ─── Orb animation variants per status ───────────────────────────────────────
 
 function useOrbAnimations(isUserSpeaking: boolean, isAISpeaking: boolean) {
@@ -98,6 +117,7 @@ export default function VoicePage() {
   const [aiText, setAiText] = useState('')               // what the AI is saying
   const [conversationMessages, setConversationMessages] = useState<Message[]>([])
   const [firstName, setFirstName] = useState('there')
+  const [voiceId, setVoiceId] = useState('browser')
 
   const audioContextRef = useRef<AudioContext | null>(null)
   const animFrameRef = useRef<number | null>(null)
@@ -105,6 +125,18 @@ export default function VoicePage() {
   const isMutedRef = useRef(false)
   const isProcessingRef = useRef(false)        // prevents overlapping sends
   const messagesRef = useRef<Message[]>([])    // stable ref for async callbacks
+  const voiceIdRef = useRef('browser')         // read at call-time, avoids stale closures
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null)
+
+  // ── Load/save voice preference ───────────────────────────────────────────
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(VOICE_PREF_KEY)
+      if (saved && VOICE_OPTIONS.some((v) => v.id === saved)) setVoiceId(saved)
+    } catch {}
+  }, [])
+
+  useEffect(() => { voiceIdRef.current = voiceId }, [voiceId])
 
   // ── Resolve first name ───────────────────────────────────────────────────
   useEffect(() => {
@@ -133,6 +165,7 @@ export default function VoicePage() {
       recognitionRef.current?.stop()
       recognitionRef.current = null
       window.speechSynthesis?.cancel()
+      audioPlayerRef.current?.pause()
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
       audioContextRef.current?.close()
     }
@@ -145,6 +178,7 @@ export default function VoicePage() {
     if (isMuted) {
       recognitionRef.current?.stop()
       window.speechSynthesis?.cancel()
+      audioPlayerRef.current?.pause()
       setIsAISpeaking(false)
       setIsUserSpeaking(false)
       setStatus('idle')
@@ -178,22 +212,41 @@ export default function VoicePage() {
     tick()
   }
 
-  // ── Begin session — must run inside a click handler (user gesture) ──────
-  const beginSession = async () => {
-    if (starting || started) return
-
-    // Unlock speechSynthesis output. Mobile browsers (and many desktop ones)
-    // require the FIRST speak() call to happen synchronously inside a user
-    // gesture or it's silently dropped — which is why recognition/replies
-    // worked but no audio ever played. This primes audio output for every
-    // speak() call made later from async code (fetch responses, etc.).
+  // ── Unlock audio output — must run synchronously inside a click handler ──
+  // Mobile browsers (and many desktop ones) require the FIRST speak()/play()
+  // call to happen inside a direct user gesture or it's silently dropped.
+  // Priming both paths here means later async calls (after a fetch response)
+  // actually produce sound, whichever voice is selected.
+  const unlockAudioOutput = () => {
     try {
       const synth = window.speechSynthesis
       const unlock = new SpeechSynthesisUtterance(' ')
       unlock.volume = 1
       synth.speak(unlock)
       synth.cancel()
-    } catch { /* speechSynthesis unavailable — TTS will just no-op later */ }
+    } catch { /* speechSynthesis unavailable */ }
+
+    try {
+      if (!audioPlayerRef.current) audioPlayerRef.current = new Audio()
+      const a = audioPlayerRef.current
+      a.muted = true
+      a.src = SILENT_WAV
+      a.play().then(() => { a.pause(); a.muted = false }).catch(() => { a.muted = false })
+    } catch { /* HTMLAudioElement unavailable */ }
+  }
+
+  // ── Voice selection — itself a click, so safe to re-unlock here too ─────
+  const selectVoice = (id: string) => {
+    setVoiceId(id)
+    try { localStorage.setItem(VOICE_PREF_KEY, id) } catch {}
+    unlockAudioOutput()
+  }
+
+  // ── Begin session — must run inside a click handler (user gesture) ──────
+  const beginSession = async () => {
+    if (starting || started) return
+
+    unlockAudioOutput()
 
     setStarting(true)
     setMicError(null)
@@ -311,10 +364,10 @@ export default function VoicePage() {
       }
       setConversationMessages([...updatedMsgs, aiMsg])
 
-      await speakResponse(reply)
+      await speak(reply)
     } catch (err) {
       console.error('Voice AI error:', err)
-      await speakResponse("I'm sorry, I had trouble connecting. Please try again.")
+      await speak("I'm sorry, I had trouble connecting. Please try again.")
     } finally {
       isProcessingRef.current = false
       setTranscript('')
@@ -379,6 +432,54 @@ export default function VoicePage() {
     })
   }
 
+  // ── ElevenLabs playback ──────────────────────────────────────────────────
+  const speakWithElevenLabs = async (text: string, id: string): Promise<void> => {
+    setStatus('speaking')
+    setIsAISpeaking(true)
+    setAiText(text)
+
+    try {
+      const res = await fetch('/api/voice/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voiceId: id }),
+      })
+      if (!res.ok) throw new Error('tts request failed')
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      if (!audioPlayerRef.current) audioPlayerRef.current = new Audio()
+      const audio = audioPlayerRef.current
+      audio.muted = false
+      audio.src = url
+
+      await new Promise<void>((resolve) => {
+        audio.onended = () => resolve()
+        audio.onerror = () => resolve()
+        audio.play().catch(() => resolve())
+      })
+      URL.revokeObjectURL(url)
+    } catch {
+      // Free-tier quota hit, network issue, etc. — fall back to the
+      // on-device voice so the session doesn't just go silent.
+      await speakResponse(text)
+      return
+    } finally {
+      setIsAISpeaking(false)
+      setAiText('')
+    }
+  }
+
+  // ── Dispatch to the selected voice provider ──────────────────────────────
+  const speak = async (text: string): Promise<void> => {
+    const opt = VOICE_OPTIONS.find((v) => v.id === voiceIdRef.current)
+    if (opt && opt.provider === 'elevenlabs') {
+      await speakWithElevenLabs(text, opt.id)
+    } else {
+      await speakResponse(text)
+    }
+  }
+
   // ── Handlers ─────────────────────────────────────────────────────────────
   const toggleMute = () => setIsMuted((v) => !v)
 
@@ -386,8 +487,18 @@ export default function VoicePage() {
     setMounted(false)
     recognitionRef.current?.stop()
     window.speechSynthesis?.cancel()
+    audioPlayerRef.current?.pause()
     await new Promise((r) => setTimeout(r, 280))
     router.push('/chat')
+  }
+
+  const changeVoice = () => {
+    recognitionRef.current?.stop()
+    window.speechSynthesis?.cancel()
+    audioPlayerRef.current?.pause()
+    setIsAISpeaking(false)
+    setIsUserSpeaking(false)
+    setStarted(false)
   }
 
   // ── Derived ──────────────────────────────────────────────────────────────
@@ -455,6 +566,31 @@ export default function VoicePage() {
           Tap below and allow microphone access to start talking with SaneSpace.
         </p>
 
+        {/* Voice picker */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-6 max-w-sm">
+          {VOICE_OPTIONS.map((opt) => {
+            const selected = voiceId === opt.id
+            return (
+              <button
+                key={opt.id}
+                onClick={() => selectVoice(opt.id)}
+                className="px-4 py-2 rounded-full border text-left transition-colors"
+                style={{
+                  borderColor: selected ? '#0A7C6E' : '#E5E7EB',
+                  backgroundColor: selected ? '#E8F5F3' : 'white',
+                }}
+              >
+                <span className="block text-sm font-medium" style={{ color: '#0A7C6E' }}>
+                  {opt.label}
+                </span>
+                <span className="block text-xs" style={{ color: '#6B7B7B' }}>
+                  {opt.sub}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
         {micError && (
           <p className="text-sm mt-3 mb-1 max-w-xs text-red-500">{micError}</p>
         )}
@@ -497,16 +633,25 @@ export default function VoicePage() {
         <span className="font-heading font-bold text-2xl" style={{ color: '#0A7C6E' }}>
           SaneSpace
         </span>
-        <motion.button
-          whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(10,124,110,0.15)' }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleExit}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-white font-medium text-sm"
-          style={{ borderColor: '#0A7C6E', color: '#0A7C6E' }}
-        >
-          <X size={14} />
-          Exit Voice Mode
-        </motion.button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={changeVoice}
+            className="px-3 py-2.5 rounded-full border bg-white font-medium text-xs"
+            style={{ borderColor: '#E5E7EB', color: '#6B7B7B' }}
+          >
+            Voice: {VOICE_OPTIONS.find((v) => v.id === voiceId)?.label ?? 'Default'}
+          </button>
+          <motion.button
+            whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(10,124,110,0.15)' }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleExit}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-white font-medium text-sm"
+            style={{ borderColor: '#0A7C6E', color: '#0A7C6E' }}
+          >
+            <X size={14} />
+            Exit Voice Mode
+          </motion.button>
+        </div>
       </div>
 
       {/* ── Main content ── */}
