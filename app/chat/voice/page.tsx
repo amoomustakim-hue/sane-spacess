@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, MicOff, Keyboard, X } from 'lucide-react'
-import type { Message } from '@/lib/types'
+import type { Message, Conversation } from '@/lib/types'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -127,6 +127,7 @@ export default function VoicePage() {
   const messagesRef = useRef<Message[]>([])    // stable ref for async callbacks
   const voiceIdRef = useRef('browser')         // read at call-time, avoids stale closures
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null)
+  const conversationIdRef = useRef('')         // fresh id per session, set in beginSession
 
   // ── Load/save voice preference ───────────────────────────────────────────
   useEffect(() => {
@@ -253,6 +254,8 @@ export default function VoicePage() {
     try {
       await startAmplitudeDetection()
       isMutedRef.current = false
+      conversationIdRef.current = crypto.randomUUID()
+      setConversationMessages([])
       setStatus('listening')
       startRecognition()
       setStarted(true)
@@ -315,6 +318,30 @@ export default function VoicePage() {
     try { recognition.start() } catch { /* already started */ }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Persist to localStorage so it shows up in /chat's history ───────────
+  const saveConversation = (msgs: Message[]) => {
+    if (msgs.length === 0) return
+    try {
+      const stored: Conversation[] = JSON.parse(localStorage.getItem('sane_conversations') ?? '[]')
+      const id = conversationIdRef.current
+      const idx = stored.findIndex((c) => c.id === id)
+      const firstUserMsg = msgs.find((m) => m.sender === 'user')
+      const rawTitle = firstUserMsg?.content.trim() ?? 'Voice conversation'
+      const title = '🎙️ ' + (rawTitle.length > 40 ? rawTitle.slice(0, 40) + '…' : rawTitle)
+      const updated: Conversation = {
+        id,
+        userId: 'local',
+        title,
+        mode: 'voice',
+        createdAt: stored[idx]?.createdAt ?? new Date().toISOString(),
+        messages: msgs,
+      }
+      if (idx >= 0) stored[idx] = updated
+      else stored.unshift(updated)
+      localStorage.setItem('sane_conversations', JSON.stringify(stored))
+    } catch {}
+  }
+
   // ── Send transcript to /api/chat ─────────────────────────────────────────
   const sendToAI = useCallback(async (text: string) => {
     if (!text || isProcessingRef.current) return
@@ -327,7 +354,7 @@ export default function VoicePage() {
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
-      conversationId: 'voice-session',
+      conversationId: conversationIdRef.current,
       sender: 'user',
       content: text,
       adaptiveMode: 'listening',
@@ -336,6 +363,7 @@ export default function VoicePage() {
 
     const updatedMsgs = [...messagesRef.current, userMsg]
     setConversationMessages(updatedMsgs)
+    saveConversation(updatedMsgs)
 
     try {
       const prefs = JSON.parse(localStorage.getItem('sane_user_preferences') ?? '{}')
@@ -356,13 +384,15 @@ export default function VoicePage() {
 
       const aiMsg: Message = {
         id: crypto.randomUUID(),
-        conversationId: 'voice-session',
+        conversationId: conversationIdRef.current,
         sender: 'ai',
         content: reply,
         adaptiveMode: 'listening',
         timestamp: new Date().toISOString(),
       }
-      setConversationMessages([...updatedMsgs, aiMsg])
+      const finalMsgs = [...updatedMsgs, aiMsg]
+      setConversationMessages(finalMsgs)
+      saveConversation(finalMsgs)
 
       await speak(reply)
     } catch (err) {
