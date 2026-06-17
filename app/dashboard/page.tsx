@@ -11,9 +11,8 @@ import ScrollReveal from '@/components/ui/ScrollReveal'
 import Button from '@/components/ui/Button'
 import CrisisStatusIndicator from '@/components/ui/CrisisStatusIndicator'
 import { staggerContainer, fadeUp, scaleIn, fadeIn } from '@/lib/animations'
-import { mockConversations, mockMoodEntries, mockRecommendations } from '@/lib/mockData'
 import { Mood } from '@/lib/types'
-import type { Conversation, Recommendation } from '@/lib/types'
+import type { Conversation } from '@/lib/types'
 import type { CrisisTier } from '@/lib/crisisDetection'
 import type { StoredUserMemory } from '@/lib/memoryExtraction'
 
@@ -52,19 +51,12 @@ const LANG_EMOJI: Record<string, string> = {
   'Neutral / International': '🌍',
 }
 
-const RESILIENCE_PILLS = [
-  '🎵 Music',
-  '📞 Calling mum',
-  '🙏 Prayer',
-  '😴 Rest',
-  '🚶 Walking',
-  '📖 Reading',
-]
+type Tip = { id: string; icon: string; text: string; category: string }
 
-const PATTERN_TRIGGERS = [
-  { label: 'Academic stress', percent: 73, color: '#0A7C6E' },
-  { label: 'Financial worry', percent: 45, color: '#6C63FF' },
-  { label: 'Relationships', percent: 28, color: '#F59E0B' },
+const GENERIC_TIPS: Tip[] = [
+  { id: 'tip-1', icon: '🧘', text: 'Try a 5-minute body scan tonight before bed — it can calm a racing mind.', category: 'mindfulness' },
+  { id: 'tip-2', icon: '📝', text: 'Write down three things that went okay today, no matter how small.', category: 'self-care' },
+  { id: 'tip-3', icon: '🚶', text: 'A 15-minute walk without your phone can lower stress and clear your head.', category: 'physical' },
 ]
 
 const PATTERN_COLOR: Record<string, string> = {
@@ -348,7 +340,7 @@ function ConvCard({
 
 // ─── RecoCard ────────────────────────────────────────────────────────────────
 
-function RecoCard({ rec }: { rec: Recommendation }) {
+function RecoCard({ rec }: { rec: Tip }) {
   return (
     <motion.div
       variants={fadeUp}
@@ -391,7 +383,7 @@ export default function DashboardPage() {
   const [crisisTier, setCrisisTier] = useState<CrisisTier>('safe')
   const [memoryConfidence, setMemoryConfidence] = useState<MemoryConfidence | null>(null)
   const [userMemory, setUserMemory] = useState<StoredUserMemory[]>([])
-
+  const [realConversations, setRealConversations] = useState<Conversation[]>([])
 
   useEffect(() => {
     try {
@@ -417,6 +409,10 @@ export default function DashboardPage() {
     try {
       const storedMemory = JSON.parse(localStorage.getItem('sane_memory_confidence') ?? '{}') as MemoryConfidence
       if (Object.keys(storedMemory).length > 0) setMemoryConfidence(storedMemory)
+    } catch {}
+    try {
+      const storedConvs = JSON.parse(localStorage.getItem('sane_conversations') ?? '[]') as Conversation[]
+      setRealConversations(storedConvs.filter((c) => c.messages.length > 0))
     } catch {}
     try {
       const storedUserMemory = JSON.parse(localStorage.getItem('sane_user_memory') ?? '[]') as StoredUserMemory[]
@@ -451,7 +447,7 @@ export default function DashboardPage() {
       updatedRecently: isRecentlyUpdated(memory.lastUpdated),
     }))
 
-  // Pattern bars: structured memory first, old confidence map next, then mock data
+  // Pattern bars: structured memory first, old confidence map next, else empty (no fake data for new users)
   const patternEntries = structuredTriggerEntries.length > 0
     ? structuredTriggerEntries
     : memoryConfidence
@@ -462,34 +458,21 @@ export default function DashboardPage() {
         color: PATTERN_COLOR[key] ?? '#0A7C6E',
         updatedRecently: isRecentlyUpdated(val.lastSeen),
       }))
-    : PATTERN_TRIGGERS.map((t) => ({
-        key: t.label,
-        label: t.label,
-        percent: t.percent,
-        color: t.color,
-        updatedRecently: false,
-      }))
+    : []
 
   const resiliencePills = userMemory
     .filter((memory) => memory.memoryType === 'resilience')
     .slice(0, 6)
     .map((memory) => memory.content.replace(/\.$/, ''))
 
-  // Chart data: real entries if available, else mock
+  // Chart data: real entries only — empty days render as "—" for new users
   const hasRealEntries = realEntries.length > 0
-  const chartEntries: AnyEntry[] = hasRealEntries
-    ? buildChartDays(realEntries)
-    : mockMoodEntries.map((e) => ({ id: e.id, mood: e.mood as string, date: e.date }))
+  const chartEntries: AnyEntry[] = buildChartDays(realEntries)
+  const timelineEntries: AnyEntry[] = chartEntries
 
-  const timelineEntries: AnyEntry[] = hasRealEntries
-    ? buildChartDays(realEntries)
-    : mockMoodEntries.map((e) => ({ id: e.id, mood: e.mood as string, date: e.date }))
+  const displayStreak = hasRealEntries ? realStreak : 0
 
-  const displayStreak = hasRealEntries ? realStreak : 3
-
-  const narrative = hasRealEntries
-    ? journeyNarrative
-    : "You've had a heavy week — 4 out of 7 days logged stress or anxiety. But you showed up. Every check-in is a signal that you haven't given up on yourself. Something is shifting. 🌿"
+  const narrative = hasRealEntries ? journeyNarrative : buildNarrative([])
 
   // Chart date range
   const today = new Date()
@@ -497,8 +480,25 @@ export default function DashboardPage() {
   weekStart.setDate(today.getDate() - 6)
   const dateRange = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}–${today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
 
-  const conversations = mockConversations
-  const recommendations = mockRecommendations
+  const conversations = realConversations
+  const recommendations = GENERIC_TIPS
+
+  // Real week-over-week trend — only shown when there's enough data to compute it honestly
+  const loggedDays = chartEntries.filter((e) => e.mood)
+  let moodTrendLabel: string | null = null
+  if (loggedDays.length >= 2) {
+    const mid = Math.ceil(loggedDays.length / 2)
+    const firstHalf = loggedDays.slice(0, mid)
+    const secondHalf = loggedDays.slice(mid)
+    const avg = (entries: AnyEntry[]) =>
+      entries.reduce((sum, e) => sum + (MOOD_VALUE[e.mood as string] ?? 3), 0) / entries.length
+    if (secondHalf.length > 0) {
+      const delta = avg(secondHalf) - avg(firstHalf)
+      if (delta > 0.3) moodTrendLabel = '📈 Mood improving this week'
+      else if (delta < -0.3) moodTrendLabel = '📉 A tougher week than usual'
+      else moodTrendLabel = '➡️ Mood holding steady'
+    }
+  }
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -639,17 +639,23 @@ export default function DashboardPage() {
                       <p className="text-xs text-gray-text mb-5">
                         What tends to weigh on you
                       </p>
-                      <div className="space-y-4">
-                        {patternEntries.map((t) => (
-                          <PatternBar
-                            key={`${t.key}-${t.percent}`}
-                            label={t.label}
-                            percent={t.percent}
-                            color={t.color}
-                            updatedRecently={t.updatedRecently}
-                          />
-                        ))}
-                      </div>
+                      {patternEntries.length > 0 ? (
+                        <div className="space-y-4">
+                          {patternEntries.map((t) => (
+                            <PatternBar
+                              key={`${t.key}-${t.percent}`}
+                              label={t.label}
+                              percent={t.percent}
+                              color={t.color}
+                              updatedRecently={t.updatedRecently}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-text italic">
+                          No patterns yet — they&apos;ll appear here as you chat and check in.
+                        </p>
+                      )}
                     </motion.div>
 
                     {/* Panel 2 — What Lifts You */}
@@ -665,27 +671,34 @@ export default function DashboardPage() {
                         Your personal resilience anchors
                       </p>
 
-                      <motion.div
-                        variants={staggerContainer}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        className="flex flex-wrap gap-2"
-                      >
-                        {(resiliencePills.length > 0 ? resiliencePills : RESILIENCE_PILLS).map((pill) => (
-                          <motion.span
-                            key={pill}
-                            variants={scaleIn}
-                            className="bg-primary text-white text-sm rounded-full px-3 py-1 font-medium"
+                      {resiliencePills.length > 0 ? (
+                        <>
+                          <motion.div
+                            variants={staggerContainer}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            className="flex flex-wrap gap-2"
                           >
-                            {pill}
-                          </motion.span>
-                        ))}
-                      </motion.div>
-
-                      <p className="text-xs text-gray-400 italic mt-4 leading-relaxed">
-                        &ldquo;These are the things that have shown up in your good-mood entries.&rdquo;
-                      </p>
+                            {resiliencePills.map((pill) => (
+                              <motion.span
+                                key={pill}
+                                variants={scaleIn}
+                                className="bg-primary text-white text-sm rounded-full px-3 py-1 font-medium"
+                              >
+                                {pill}
+                              </motion.span>
+                            ))}
+                          </motion.div>
+                          <p className="text-xs text-gray-400 italic mt-4 leading-relaxed">
+                            &ldquo;These are the things that have shown up in your good-mood entries.&rdquo;
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-gray-text italic">
+                          Log a few good-mood check-ins and SaneSpace will start surfacing what lifts you here.
+                        </p>
+                      )}
                     </motion.div>
 
                     {/* Panel 3 — Your Journey */}
@@ -755,7 +768,7 @@ export default function DashboardPage() {
                     <div className="flex flex-wrap gap-2 mt-6 pt-5 border-t border-border">
                       {[
                         `📊 ${chartEntries.filter(e => e.mood).length} check-ins this week`,
-                        '📈 Mood improving +12%',
+                        ...(moodTrendLabel ? [moodTrendLabel] : []),
                         `🔥 ${displayStreak} day streak`,
                       ].map((s) => (
                         <span

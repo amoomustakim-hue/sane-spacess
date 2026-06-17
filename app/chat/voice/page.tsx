@@ -91,6 +91,9 @@ export default function VoicePage() {
   const [isAISpeaking, setIsAISpeaking] = useState(false)
   const [mounted, setMounted] = useState(true)
   const [isSupported, setIsSupported] = useState(true)
+  const [started, setStarted] = useState(false)
+  const [starting, setStarting] = useState(false)
+  const [micError, setMicError] = useState<string | null>(null)
   const [transcript, setTranscript] = useState('')        // what the user said
   const [aiText, setAiText] = useState('')               // what the AI is saying
   const [conversationMessages, setConversationMessages] = useState<Message[]>([])
@@ -116,13 +119,15 @@ export default function VoicePage() {
   useEffect(() => { messagesRef.current = conversationMessages }, [conversationMessages])
 
   // ── Mount / unmount ──────────────────────────────────────────────────────
+  // Feature-detect only here. Mic capture and recognition must start from a
+  // direct user tap (see beginSession) — mobile browsers (and several desktop
+  // ones) silently block getUserMedia/SpeechRecognition.start() when called
+  // from a useEffect with no preceding gesture, which made this page look
+  // completely unresponsive.
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (!SR) { setIsSupported(false); return }
-
-    startAmplitudeDetection()
-    startRecognition()
+    if (!SR) setIsSupported(false)
 
     return () => {
       recognitionRef.current?.stop()
@@ -131,11 +136,11 @@ export default function VoicePage() {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
       audioContextRef.current?.close()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ── Mute toggle side-effects ─────────────────────────────────────────────
   useEffect(() => {
+    if (!started) return
     isMutedRef.current = isMuted
     if (isMuted) {
       recognitionRef.current?.stop()
@@ -148,29 +153,47 @@ export default function VoicePage() {
       startRecognition()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMuted])
+  }, [isMuted, started])
 
   // ── Web Audio amplitude (orb animation) ──────────────────────────────────
+  // Throws on failure so beginSession can surface a clear error instead of
+  // silently doing nothing.
   const startAmplitudeDetection = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const ctx = new AudioContext()
-      audioContextRef.current = ctx
-      const analyser = ctx.createAnalyser()
-      ctx.createMediaStreamSource(stream).connect(analyser)
-      analyser.fftSize = 256
-      const data = new Uint8Array(analyser.frequencyBinCount)
-      if (ctx.state === 'suspended') await ctx.resume()
-      const tick = () => {
-        analyser.getByteFrequencyData(data)
-        const avg = data.reduce((a, b) => a + b, 0) / data.length
-        if (!isMutedRef.current && !isProcessingRef.current) {
-          setIsUserSpeaking(avg > 12)
-        }
-        animFrameRef.current = requestAnimationFrame(tick)
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    const ctx = new AudioContext()
+    audioContextRef.current = ctx
+    const analyser = ctx.createAnalyser()
+    ctx.createMediaStreamSource(stream).connect(analyser)
+    analyser.fftSize = 256
+    const data = new Uint8Array(analyser.frequencyBinCount)
+    if (ctx.state === 'suspended') await ctx.resume()
+    const tick = () => {
+      analyser.getByteFrequencyData(data)
+      const avg = data.reduce((a, b) => a + b, 0) / data.length
+      if (!isMutedRef.current && !isProcessingRef.current) {
+        setIsUserSpeaking(avg > 12)
       }
-      tick()
-    } catch { /* mic denied — orb still shows idle animation */ }
+      animFrameRef.current = requestAnimationFrame(tick)
+    }
+    tick()
+  }
+
+  // ── Begin session — must run inside a click handler (user gesture) ──────
+  const beginSession = async () => {
+    if (starting || started) return
+    setStarting(true)
+    setMicError(null)
+    try {
+      await startAmplitudeDetection()
+      isMutedRef.current = false
+      setStatus('listening')
+      startRecognition()
+      setStarted(true)
+    } catch {
+      setMicError("We couldn't access your microphone. Check your browser/phone settings and allow microphone access for this site, then try again.")
+    } finally {
+      setStarting(false)
+    }
   }
 
   // ── SpeechRecognition ────────────────────────────────────────────────────
@@ -368,6 +391,68 @@ export default function VoicePage() {
           style={{ borderColor: '#0A7C6E', color: '#0A7C6E' }}
         >
           Switch to Text Chat
+        </button>
+      </div>
+    )
+  }
+
+  if (!started) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center"
+        style={{ backgroundColor: '#F5F7F5' }}>
+        <motion.div
+          className="relative flex items-center justify-center mb-8"
+          style={{ width: 180, height: 180 }}
+        >
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 180, height: 180,
+              background: 'radial-gradient(circle, rgba(10,124,110,0.2) 0%, rgba(10,124,110,0.08) 50%, transparent 75%)',
+            }}
+            animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+          />
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 100, height: 100,
+              background: 'radial-gradient(circle at 40% 35%, #0D8C7E 0%, #0A7C6E 60%, #085E52 100%)',
+              boxShadow: '0 20px 60px rgba(10,124,110,0.3)',
+            }}
+          />
+          <Mic size={32} className="absolute text-white" />
+        </motion.div>
+
+        <h2 className="font-heading text-2xl font-bold mb-2" style={{ color: '#0A7C6E' }}>
+          Ready when you are
+        </h2>
+        <p className="text-sm mb-1 max-w-xs" style={{ color: '#6B7B7B' }}>
+          Tap below and allow microphone access to start talking with SaneSpace.
+        </p>
+
+        {micError && (
+          <p className="text-sm mt-3 mb-1 max-w-xs text-red-500">{micError}</p>
+        )}
+
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={beginSession}
+          disabled={starting}
+          className="mt-6 px-7 py-3.5 rounded-full font-medium text-sm text-white disabled:opacity-60"
+          style={{ backgroundColor: '#0A7C6E' }}
+        >
+          {starting ? 'Requesting microphone…' : 'Tap to start talking'}
+        </motion.button>
+
+        <button
+          onClick={() => router.push('/chat')}
+          className="mt-4 flex items-center gap-2 font-medium text-sm"
+          style={{ color: '#6B7B7B' }}
+        >
+          <Keyboard size={15} />
+          Switch to Text Chat instead
         </button>
       </div>
     )

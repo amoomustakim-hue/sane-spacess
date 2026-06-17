@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, MicOff, ArrowUp, MessageCircle, Plus, ChevronLeft } from 'lucide-react'
+import { Mic, ArrowUp, MessageCircle, Plus, ChevronLeft } from 'lucide-react'
 import Sidebar from '@/components/layout/Sidebar'
 import ChatBubble from '@/components/ui/ChatBubble'
 import ModeTag from '@/components/ui/ModeTag'
@@ -99,7 +99,6 @@ export default function ChatPage() {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [activeMode, setActiveMode] = useState<string>('listening')
-  const [isRecording, setIsRecording] = useState(false)
   const [showMobileConvs, setShowMobileConvs] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleValue, setTitleValue] = useState('New conversation')
@@ -109,7 +108,6 @@ export default function ChatPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
   // ── Mount: load conversations + prefs ────────────────────────────────────
@@ -439,31 +437,6 @@ export default function ChatPage() {
     }
   }
 
-  // ── Voice recording ──────────────────────────────────────────────────────
-
-  const toggleRecording = async () => {
-    if (isRecording) {
-      mediaRecorderRef.current?.stop()
-      setIsRecording(false)
-      return
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream)
-      mediaRecorderRef.current = recorder
-      const chunks: BlobPart[] = []
-      recorder.ondataavailable = (e) => chunks.push(e.data)
-      recorder.onstop = () => {
-        stream.getTracks().forEach((t) => t.stop())
-        setInput('[Voice message recorded — Whisper integration coming soon]')
-      }
-      recorder.start()
-      setIsRecording(true)
-    } catch (err) {
-      console.error('Mic access denied:', err)
-    }
-  }
-
   // ── Derived ──────────────────────────────────────────────────────────────
   const firstName = user?.firstName || null
   const messageGroups = groupByDate(messages)
@@ -721,46 +694,16 @@ export default function ChatPage() {
               )}
             </AnimatePresence>
 
-            {/* Voice waveform indicator */}
-            <AnimatePresence>
-              {isRecording && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  className="flex items-center gap-2 px-2 pb-2"
-                >
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <motion.div
-                      key={i}
-                      className="w-1 bg-primary rounded-full"
-                      animate={{ height: ['6px', '20px', '6px'] }}
-                      transition={{
-                        duration: 0.7,
-                        repeat: Infinity,
-                        delay: i * 0.1,
-                        ease: 'easeInOut' as const,
-                      }}
-                    />
-                  ))}
-                  <span className="text-primary text-sm font-medium ml-1">Listening...</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             <div className="flex items-end gap-2">
-              {/* Mic button */}
+              {/* Mic button — opens the dedicated Voice Mode experience */}
               <button
-                onClick={toggleRecording}
+                onClick={() => router.push('/chat/voice')}
                 disabled={hardStop}
+                title="Switch to voice mode"
                 className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all
-                  ${hardStop ? 'opacity-40 cursor-not-allowed bg-surface' : isRecording ? 'bg-red-500 animate-pulse' : 'bg-surface hover:bg-primary-light'}`}
+                  ${hardStop ? 'opacity-40 cursor-not-allowed bg-surface' : 'bg-surface hover:bg-primary-light'}`}
               >
-                {isRecording ? (
-                  <MicOff size={17} className="text-white" />
-                ) : (
-                  <Mic size={17} className="text-gray-text" />
-                )}
+                <Mic size={17} className="text-gray-text" />
               </button>
 
               {/* Textarea */}
