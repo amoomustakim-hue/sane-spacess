@@ -181,6 +181,20 @@ export default function VoicePage() {
   // ── Begin session — must run inside a click handler (user gesture) ──────
   const beginSession = async () => {
     if (starting || started) return
+
+    // Unlock speechSynthesis output. Mobile browsers (and many desktop ones)
+    // require the FIRST speak() call to happen synchronously inside a user
+    // gesture or it's silently dropped — which is why recognition/replies
+    // worked but no audio ever played. This primes audio output for every
+    // speak() call made later from async code (fetch responses, etc.).
+    try {
+      const synth = window.speechSynthesis
+      const unlock = new SpeechSynthesisUtterance(' ')
+      unlock.volume = 1
+      synth.speak(unlock)
+      synth.cancel()
+    } catch { /* speechSynthesis unavailable — TTS will just no-op later */ }
+
     setStarting(true)
     setMicError(null)
     try {
@@ -326,13 +340,23 @@ export default function VoicePage() {
       utterance.pitch = 1.0
       utterance.volume = 1.0
 
-      // Pick a good voice
-      const voices = synth.getVoices()
-      const preferred =
+      // Pick a good voice — getVoices() can return [] before the browser has
+      // loaded its voice list, so fall back to whatever loads via the event.
+      const pickVoice = (voices: SpeechSynthesisVoice[]) =>
         voices.find((v) => v.lang.startsWith('en') && v.name.includes('Female')) ||
         voices.find((v) => v.lang.startsWith('en')) ||
         voices[0]
-      if (preferred) utterance.voice = preferred
+
+      const initialVoices = synth.getVoices()
+      if (initialVoices.length > 0) {
+        const preferred = pickVoice(initialVoices)
+        if (preferred) utterance.voice = preferred
+      } else {
+        synth.addEventListener('voiceschanged', () => {
+          const preferred = pickVoice(synth.getVoices())
+          if (preferred) utterance.voice = preferred
+        }, { once: true })
+      }
 
       utterance.onend = () => {
         setIsAISpeaking(false)
