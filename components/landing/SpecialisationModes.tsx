@@ -3,7 +3,6 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import Button from '@/components/ui/Button'
 import Magnetic from '@/components/ui/Magnetic'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import { staggerContainer } from '@/lib/animations'

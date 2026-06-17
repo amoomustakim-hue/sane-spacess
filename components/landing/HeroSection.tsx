@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Mic, ChevronDown } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import Button from '@/components/ui/Button'
 import Magnetic from '@/components/ui/Magnetic'
 
 // Dynamically import 3D canvas — SSR off to avoid browser-API issues on server

@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { MeshDistortMaterial, Float, Sphere } from '@react-three/drei'
+import { MeshDistortMaterial, Float } from '@react-three/drei'
 import * as THREE from 'three'
 
 // ── Animated glowing orb (main) ────────────────────────────────────────────
