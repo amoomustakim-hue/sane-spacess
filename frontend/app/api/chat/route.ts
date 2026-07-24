@@ -7,6 +7,7 @@ import { buildCareModeResponse } from '@/lib/careMode'
 import type { LanguageProfileDetected } from '@/lib/careMode'
 import { extractEmotionalMemory } from '@/lib/memoryExtraction'
 import { classifyRisk } from '@/lib/riskClassifier'
+import { findLanguage } from '@/lib/languages'
 
 let groq: Groq | null = null
 function getGroq(): Groq {
@@ -43,9 +44,10 @@ function buildSystemPrompt(
 ): string {
   const specKey = SPEC_MAP[specialisation] ?? 'talk'
   const langKey = LANG_MAP[languageProfile] ?? 'neutral'
+  const selectedLanguage = findLanguage(languageProfile)
 
   const coreIdentity = `
-You are SaneSpace, an AI wellness companion built for Nigerian students and young professionals.
+You are SaneSpace, a multilingual AI wellness companion built for people across cultures, with especially deep Nigerian cultural support.
 You are warm, culturally intelligent, and emotionally attuned.
 You are NOT a licensed therapist but you provide evidence-based emotional support.
 You never diagnose. You are always trauma-informed and non-judgmental.
@@ -160,7 +162,9 @@ RESPONSE STYLE:
   return [
     coreIdentity,
     specialisationBlocks[specKey] ?? specialisationBlocks.talk,
-    languageBlocks[langKey] ?? languageBlocks.neutral,
+    LANG_MAP[languageProfile]
+      ? (languageBlocks[langKey] ?? languageBlocks.neutral)
+      : `LANGUAGE: Respond naturally in ${selectedLanguage.name} (${selectedLanguage.nativeName}). Do not switch to English unless the user does. Keep the same warm, conversational tone and use culturally respectful phrasing.`,
     modeBlocks[activeMode] ?? modeBlocks.listening,
     culturalContext,
     responseGuidelines,
