@@ -1,10 +1,11 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Search, Volume2 } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Search, Volume2 } from 'lucide-react'
 import { SUPPORTED_LANGUAGES, findLanguage } from '@/lib/languages'
 import { COMMUNICATION_STYLES, type CommunicationStyle } from '@/lib/preferences'
 import { voicesForProvider } from '@/lib/voice/catalog'
+import { providerLabel } from '@/lib/voice/routing'
 
 type Props = {
   languageCode: string
@@ -18,6 +19,7 @@ type Props = {
 export default function LanguageVoicePicker(props: Props) {
   const [query, setQuery] = useState('')
   const [previewing, setPreviewing] = useState<string | null>(null)
+  const [previewMessage, setPreviewMessage] = useState<{ tone: 'success' | 'error'; text: string } | null>(null)
   const language = findLanguage(props.languageCode)
   const voices = voicesForProvider(language.provider)
   const filteredLanguages = useMemo(() => {
@@ -30,6 +32,7 @@ export default function LanguageVoicePicker(props: Props) {
 
   const previewVoice = async (voiceId: string) => {
     setPreviewing(voiceId)
+    setPreviewMessage(null)
     const sample = language.code === 'pcm-NG'
       ? 'How you dey? I dey here with you.'
       : `Hello. This is SaneSpace speaking ${language.name}.`
@@ -49,7 +52,10 @@ export default function LanguageVoicePicker(props: Props) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: sample, voiceId, languageCode: language.code }),
         })
-        if (!response.ok) throw new Error('Preview unavailable')
+        if (!response.ok) {
+          const details = await response.json().catch(() => null) as { error?: string } | null
+          throw new Error(details?.error ?? 'Preview unavailable')
+        }
         const url = URL.createObjectURL(await response.blob())
         const audio = new Audio(url)
         await audio.play()
@@ -59,8 +65,10 @@ export default function LanguageVoicePicker(props: Props) {
         })
         URL.revokeObjectURL(url)
       }
-    } catch {
-      // A missing local provider key should not prevent saving the preference.
+      setPreviewMessage({ tone: 'success', text: `${voiceId === 'browser' ? 'Device voice' : providerLabel(language.provider)} preview played.` })
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'Preview unavailable'
+      setPreviewMessage({ tone: 'error', text: `${reason}. Your device voice remains available.` })
     } finally {
       setPreviewing(null)
     }
@@ -104,7 +112,10 @@ export default function LanguageVoicePicker(props: Props) {
 
       <div>
         <p className="text-sm font-medium text-dark">Voice</p>
-        <p className="mt-0.5 text-xs text-gray-text">{language.provider === 'yarngpt' ? 'Nigerian voices powered by YarnGPT' : 'Multilingual voices powered by ElevenLabs'}</p>
+        <div className="mt-1 flex items-center gap-2">
+          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${language.provider === 'yarngpt' ? 'bg-emerald-100 text-emerald-800' : 'bg-violet-100 text-violet-800'}`}>{providerLabel(language.provider)}</span>
+          <p className="text-xs text-gray-text">{language.provider === 'yarngpt' ? 'Authentic Nigerian voice routing' : 'Multilingual voice routing'}</p>
+        </div>
         <div className="mt-2 flex flex-wrap gap-2">
           {voices.map((voice) => (
             <div key={voice.id} className={`flex items-center rounded-full border ${props.voiceId === voice.id ? 'border-primary bg-primary-light' : 'border-border bg-surface'}`}>
@@ -118,6 +129,12 @@ export default function LanguageVoicePicker(props: Props) {
             </div>
           ))}
         </div>
+        {previewMessage && (
+          <p role="status" className={`mt-3 flex items-center gap-1.5 text-xs ${previewMessage.tone === 'error' ? 'text-amber-700' : 'text-emerald-700'}`}>
+            {previewMessage.tone === 'error' ? <AlertCircle size={14} /> : <CheckCircle2 size={14} />}
+            {previewMessage.text}
+          </p>
+        )}
       </div>
     </div>
   )
