@@ -17,6 +17,7 @@ export interface Message {
   riskLevel?: 'low' | 'medium' | 'high' | 'critical'
   riskScore?: number
   showHumanHandoff?: boolean
+  supportResources?: { name: string; contact: string; description: string }[]
   responseType?: 'soft_care' | 'handoff_care' | 'urgent_care'
   memoryExtraction?: {
     memoriesExtracted: {

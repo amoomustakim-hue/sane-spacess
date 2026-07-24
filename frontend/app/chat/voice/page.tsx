@@ -8,6 +8,7 @@ import { Mic, MicOff, Keyboard, X } from 'lucide-react'
 import type { Message, Conversation } from '@/lib/types'
 import { findLanguage, type SupportedLanguage } from '@/lib/languages'
 import { voicesForProvider } from '@/lib/voice/catalog'
+import { providerLabel } from '@/lib/voice/routing'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -109,6 +110,7 @@ export default function VoicePage() {
   const [firstName, setFirstName] = useState('there')
   const [voiceId, setVoiceId] = useState('browser')
   const [language, setLanguage] = useState<SupportedLanguage>(() => findLanguage())
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null)
   const voiceOptions = voicesForProvider(language.provider)
 
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -372,6 +374,8 @@ export default function VoicePage() {
           languageProfile: (prefs.languageProfile as string) ?? 'Neutral / International',
           activeMode: 'listening',
           userName: firstName,
+          communicationStyle: (prefs.communicationStyle as string) ?? 'natural',
+          regionCode: (prefs.regionCode as string) ?? 'OTHER',
         }),
       })
 
@@ -470,8 +474,12 @@ export default function VoicePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voiceId: id, languageCode: language.code }),
       })
-      if (!res.ok) throw new Error('tts request failed')
+      if (!res.ok) {
+        const details = await res.json().catch(() => null) as { error?: string } | null
+        throw new Error(details?.error ?? 'Voice provider request failed')
+      }
 
+      setVoiceNotice(null)
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       if (!audioPlayerRef.current) audioPlayerRef.current = new Audio()
@@ -485,9 +493,10 @@ export default function VoicePage() {
         audio.play().catch(() => resolve())
       })
       URL.revokeObjectURL(url)
-    } catch {
-      // Free-tier quota hit, network issue, etc. — fall back to the
-      // on-device voice so the session doesn't just go silent.
+    } catch (error) {
+      // Provider errors fall back to the on-device voice so the session stays audible.
+      const reason = error instanceof Error ? error.message : 'Voice provider unavailable'
+      setVoiceNotice(`${reason}. Using your device voice for this response.`)
       await speakResponse(text)
       return
     } finally {
@@ -617,6 +626,10 @@ export default function VoicePage() {
           })}
         </div>
 
+        <p className="mt-3 text-xs font-medium" style={{ color: '#6B7B7B' }}>
+          {language.provider === 'yarngpt' ? 'Nigerian voice engine' : 'Global voice engine'}: {providerLabel(language.provider)}
+        </p>
+
         {micError && (
           <p className="text-sm mt-3 mb-1 max-w-xs text-red-500">{micError}</p>
         )}
@@ -681,6 +694,11 @@ export default function VoicePage() {
       </div>
 
       {/* ── Main content ── */}
+      {voiceNotice && (
+        <div role="status" className="relative z-10 mx-auto mt-2 max-w-md rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-800">
+          {voiceNotice}
+        </div>
+      )}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pb-36">
 
         {/* Title */}
