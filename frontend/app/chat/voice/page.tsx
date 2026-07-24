@@ -373,6 +373,7 @@ export default function VoicePage() {
           activeMode: 'listening',
           userName: firstName,
           communicationStyle: (prefs.communicationStyle as string) ?? 'natural',
+          regionCode: (prefs.regionCode as string) ?? 'OTHER',
         }),
       })
 

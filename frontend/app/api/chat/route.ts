@@ -8,6 +8,7 @@ import type { LanguageProfileDetected } from '@/lib/careMode'
 import { extractEmotionalMemory } from '@/lib/memoryExtraction'
 import { classifyRisk } from '@/lib/riskClassifier'
 import { findLanguage } from '@/lib/languages'
+import { findRegion } from '@/lib/regions'
 
 let groq: Groq | null = null
 function getGroq(): Groq {
@@ -42,10 +43,13 @@ function buildSystemPrompt(
   activeMode: string,
   userName: string,
   communicationStyle = 'natural',
+  regionCode = 'OTHER',
 ): string {
   const specKey = SPEC_MAP[specialisation] ?? 'talk'
   const langKey = LANG_MAP[languageProfile] ?? 'neutral'
   const selectedLanguage = findLanguage(languageProfile)
+  const selectedRegion = findRegion(regionCode)
+  const regionalResourceSummary = selectedRegion.resources.map((resource) => `${resource.name}: ${resource.contact}`).join('; ')
 
   const coreIdentity = `
 You are SaneSpace, a multilingual AI wellness companion built for people across cultures, with especially deep Nigerian cultural support.
@@ -168,6 +172,7 @@ RESPONSE STYLE:
       : `LANGUAGE: Respond naturally in ${selectedLanguage.name} (${selectedLanguage.nativeName}). Do not switch to English unless the user does. Keep the same warm, conversational tone and use culturally respectful phrasing.`,
     modeBlocks[activeMode] ?? modeBlocks.listening,
     `CONVERSATION STYLE: Use a ${communicationStyle} style while preserving empathy, clarity, and safety.`,
+    `REGION: The user selected ${selectedRegion.name}. For urgent safety support, refer only to these resources: ${regionalResourceSummary}.`,
     culturalContext,
     responseGuidelines,
   ].join('\n')
@@ -331,11 +336,13 @@ export async function POST(req: NextRequest) {
       activeMode: string
       userName: string
       communicationStyle?: string
+      regionCode?: string
     }
-    const { messages, specialisation, languageProfile, userName, communicationStyle } = body
+    const { messages, specialisation, languageProfile, userName, communicationStyle, regionCode } = body
 
     const lastUserMsg = [...messages].reverse().find((m) => m.sender === 'user')?.content ?? ''
     const riskResult = classifyRisk(lastUserMsg, messages)
+    const selectedRegion = findRegion(regionCode)
     const detectedLanguage = toLanguageProfileDetected(languageProfile)
     const normalDetectedMode = detectMode(lastUserMsg)
     const detectedMode = riskResult.shouldEnterCareMode ? 'care' : normalDetectedMode
@@ -399,23 +406,20 @@ export async function POST(req: NextRequest) {
         responseType: careResponse.responseType,
         crisisEvent,
         memoryExtraction,
+        supportResources: selectedRegion.resources,
         reasoning,
       })
     }
 
     if (crisisAssessment.tier === 'stop') {
       return NextResponse.json({
-        message: `I hear you, and I'm genuinely concerned about you right now.
-
-Please reach out to someone who can really help:
-
-📞 MANI Crisis Line: 08091726902 (free, available now)
-📞 She Writes Woman: 0800 800 2000
-📞 NIMH Lagos: 01-7731640
-
-You don't have to face this alone. Please make that call. 🌿`,
+        message: ['I hear you, and I am genuinely concerned about you right now.', '', 'Please reach out to someone who can help:', '', ...selectedRegion.resources.map((resource) => `${resource.name}: ${resource.contact}`), '', 'You do not have to face this alone. Please contact one of these services now.'].join('\n'),
         detectedMode: 'care',
         crisisAssessment,
+        riskLevel: 'critical',
+        riskScore: 0.95,
+        showHumanHandoff: true,
+        supportResources: selectedRegion.resources,
         hardStop: true,
       })
     }
@@ -451,10 +455,11 @@ You don't have to face this alone. Please make that call. 🌿`,
         showHumanHandoff: false,
         shouldLogCrisisEvent: false,
         memoryExtraction,
+        supportResources: selectedRegion.resources,
       })
     }
 
-    const systemPrompt = buildSystemPrompt(specialisation, languageProfile, detectedMode, userName, communicationStyle)
+    const systemPrompt = buildSystemPrompt(specialisation, languageProfile, detectedMode, userName, communicationStyle, regionCode)
 
     const openaiMessages = [
       { role: 'system' as const, content: systemPrompt },

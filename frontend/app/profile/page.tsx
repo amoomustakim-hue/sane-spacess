@@ -12,6 +12,7 @@ import { fadeUp } from '@/lib/animations'
 import { findLanguage } from '@/lib/languages'
 import type { CommunicationStyle } from '@/lib/preferences'
 import LanguageVoicePicker from '@/components/ui/LanguageVoicePicker'
+import RegionSelector from '@/components/ui/RegionSelector'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -176,6 +177,7 @@ export default function ProfilePage() {
     languageCode: 'en',
     communicationStyle: 'natural' as CommunicationStyle,
     voiceId: 'browser',
+    regionCode: 'OTHER',
   })
   const [isSaving, setIsSaving] = useState(false)
   const [savedSection, setSavedSection] = useState<string | null>(null)
@@ -208,6 +210,7 @@ export default function ProfilePage() {
         languageCode: language.code,
         communicationStyle: (saved.communicationStyle as CommunicationStyle) ?? 'natural',
         voiceId,
+        regionCode: saved.regionCode ?? 'OTHER',
       })
       setWellnessGoal(saved.wellnessGoal ?? '')
       setDisplayWellnessGoal(saved.wellnessGoal || 'Not set')
@@ -288,6 +291,7 @@ export default function ProfilePage() {
       saved.voiceProvider = language.provider
       saved.communicationStyle = preferences.communicationStyle
       saved.voiceId = preferences.voiceId
+      saved.regionCode = preferences.regionCode
       localStorage.setItem('sane_user_preferences', JSON.stringify(saved))
       localStorage.setItem('sane_voice_preference', preferences.voiceId)
     } catch {}
@@ -473,6 +477,8 @@ export default function ProfilePage() {
                 ))}
               </div>
               {/* Language, style and voice */}
+              <RegionSelector value={preferences.regionCode} onChange={(regionCode) => setPreferences((prev) => ({ ...prev, regionCode }))} />
+              <div className="mt-6 mb-6">
               <LanguageVoicePicker
                 languageCode={preferences.languageCode}
                 communicationStyle={preferences.communicationStyle}
@@ -481,6 +487,7 @@ export default function ProfilePage() {
                 onStyleChange={(communicationStyle) => setPreferences((prev) => ({ ...prev, communicationStyle }))}
                 onVoiceChange={(voiceId) => setPreferences((prev) => ({ ...prev, voiceId }))}
               />
+              </div>
 
               <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
                 <Button

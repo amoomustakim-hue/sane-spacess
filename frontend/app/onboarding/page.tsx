@@ -12,6 +12,7 @@ import TypingIndicator from '@/components/ui/TypingIndicator'
 import { findLanguage } from '@/lib/languages'
 import type { CommunicationStyle } from '@/lib/preferences'
 import LanguageVoicePicker from '@/components/ui/LanguageVoicePicker'
+import RegionSelector from '@/components/ui/RegionSelector'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -87,6 +88,7 @@ type Selections = {
   languageCode: string
   communicationStyle: CommunicationStyle
   voiceId: string
+  regionCode: string
 }
 
 const INITIAL_SELECTIONS: Selections = {
@@ -97,6 +99,7 @@ const INITIAL_SELECTIONS: Selections = {
   languageCode: 'en',
   communicationStyle: 'natural',
   voiceId: 'browser',
+  regionCode: 'OTHER',
 }
 
 // ─── AIBubble ────────────────────────────────────────────────────────────────
@@ -304,6 +307,7 @@ export default function OnboardingPage() {
         languageProfile: language.name,
         communicationStyle: selections.communicationStyle,
         voiceId: selections.voiceId,
+        regionCode: selections.regionCode,
         languageCode: language.code,
         locale: language.locale,
         voiceProvider: language.provider,
@@ -482,6 +486,8 @@ export default function OnboardingPage() {
                 <AnimatePresence>
                   {showContent && (
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
+                      <RegionSelector value={selections.regionCode} onChange={(regionCode) => setSelections((prev) => ({ ...prev, regionCode }))} />
+                      <div className="mt-6">
                       <LanguageVoicePicker
                         languageCode={selections.languageCode}
                         communicationStyle={selections.communicationStyle}
@@ -490,6 +496,7 @@ export default function OnboardingPage() {
                         onStyleChange={(communicationStyle) => setSelections((prev) => ({ ...prev, communicationStyle }))}
                         onVoiceChange={(voiceId) => setSelections((prev) => ({ ...prev, voiceId }))}
                       />
+                      </div>
                       <Button variant="primary" size="md" className="mt-6" onClick={() => goToStep(5, 0)}>
                         Continue
                       </Button>

@@ -182,7 +182,7 @@ export default function ChatBubble({ message, isLatest = false }: ChatBubbleProp
       )}
 
       {shouldShowHandoff && (
-        <HumanHandoffCard riskLevel={message.riskLevel as 'high' | 'critical'} />
+        <HumanHandoffCard riskLevel={message.riskLevel as 'high' | 'critical'} resources={message.supportResources} />
       )}
     </div>
   )
