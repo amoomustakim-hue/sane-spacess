@@ -3,8 +3,9 @@ import Link from 'next/link'
 export default function LandingFooter() {
   return (
     <footer className="relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-dark" />
+      
+      <div className="absolute inset-0 bg-[#0D0D1A]" />
+      
       {/* Subtle glow line at top */}
       <div
         className="absolute top-0 left-0 right-0 h-px"

@@ -442,8 +442,8 @@ export default function ChatPage() {
   const messageGroups = groupByDate(messages)
 
   // ── Render ───────────────────────────────────────────────────────────────
-  return (
-    <div className="flex h-screen overflow-hidden mesh-light">
+  return ( 
+    <div className="flex h-[100vh] overflow-hidden mesh-light relative">
       <Sidebar userName={firstName || user?.fullName || 'User'} />
 
       {/* ── Mobile conversation drawer ── */}
@@ -488,10 +488,10 @@ export default function ChatPage() {
         </div>
 
         {/* ── Active chat panel ── */}
-        <div className="flex-1 flex flex-col min-w-0 h-full">
+        <div className="flex-1 flex flex-col min-w-0 h-full relative">
 
           {/* Top bar */}
-          <div className="shrink-0 bg-surface border-b border-border px-4 py-3">
+          <div className="shrink-0 bg-surface border-b border-border px-4 py-6">
             <div className="flex items-center gap-3">
               {/* Mobile back button */}
               <button
@@ -558,7 +558,7 @@ export default function ChatPage() {
             </div>
 
             {/* Mobile mode pills */}
-            <div className="sm:hidden flex gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-hide">
+            <div className="sm:hidden flex gap-1.5 mt-4 overflow-x-auto pb-2 scrollbar-hide">
               {MODE_PILLS.map((p) => (
                 <button
                   key={p.id}
@@ -662,7 +662,7 @@ export default function ChatPage() {
           </div>
 
           {/* Input area */}
-          <div className="shrink-0 border-t border-border bg-surface px-4 py-3">
+          <div className="border-t border-border bg-surface px-4 py-3 w-full absolute bottom-16 md:bottom-0">
             {/* Hard stop safety banner */}
             <AnimatePresence>
               {hardStop && (
