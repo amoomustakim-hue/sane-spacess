@@ -10,9 +10,9 @@ export const YARNGPT_VOICES: VoiceOption[] = [
   { id: 'Chinenye', label: 'Chinenye', sub: 'Engaging & warm', provider: 'yarngpt' },
 ]
 export const ELEVENLABS_VOICES: VoiceOption[] = [
-  { id: '21m00Tcm4TlvDq8ikWAM', label: 'Rachel', sub: 'Calm & warm', provider: 'elevenlabs' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Bella', sub: 'Soft & soothing', provider: 'elevenlabs' },
-  { id: 'ErXwobaYiN019PkySvjV', label: 'Antoni', sub: 'Gentle & reassuring', provider: 'elevenlabs' },
+  { id: 'JBFqnCBsd6RMkjVDRZzb', label: 'George', sub: 'Warm & grounded', provider: 'elevenlabs' },
+  { id: 'cjVigY5qzO86Huf0OWal', label: 'Eric', sub: 'Calm & reassuring', provider: 'elevenlabs' },
+  { id: 'FGY2WhTYpPnrIDTdsKH5', label: 'Laura', sub: 'Clear & supportive', provider: 'elevenlabs' },
 ]
 export function voicesForProvider(provider: 'yarngpt' | 'elevenlabs') {
   return [BROWSER_VOICE, ...(provider === 'yarngpt' ? YARNGPT_VOICES : ELEVENLABS_VOICES)]
