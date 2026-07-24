@@ -9,6 +9,7 @@ import MoodEmoji from '@/components/ui/MoodEmoji'
 import PillChip from '@/components/ui/PillChip'
 import Button from '@/components/ui/Button'
 import TypingIndicator from '@/components/ui/TypingIndicator'
+import { SUPPORTED_LANGUAGES, findLanguage } from '@/lib/languages'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -41,13 +42,13 @@ const MODES = [
   { emoji: '💼', title: 'Work & Career', desc: 'Burnout, ambition, workplace stress' },
 ]
 
-const LANGUAGES = [
-  { emoji: '🇳🇬', title: 'Nigerian Pidgin', desc: "I dey, abeg, wahala — SaneSpace gets it" },
-  { emoji: '🗣️', title: 'Lagos English', desc: 'Fast, code-switching, street-smart' },
-  { emoji: '🎓', title: 'Student English', desc: 'Campus life, mixed formal and informal' },
-  { emoji: '🏠', title: 'Nigerian Home English', desc: 'Proper Nigerian English, family-oriented' },
-  { emoji: '🌍', title: 'Neutral / International', desc: 'Standard English, no slang' },
-]
+const LANGUAGES = SUPPORTED_LANGUAGES.map((language) => ({
+  emoji: language.emoji,
+  title: language.name,
+  desc: language.nativeName === language.name
+    ? language.description
+    : language.nativeName + ' - ' + language.description,
+}))
 
 type ClosingMsg = { line1: string; body: string; disclaimer?: string }
 
@@ -301,9 +302,13 @@ export default function OnboardingPage() {
 
   const handleComplete = () => {
     try {
+      const language = findLanguage(selections.languageProfile)
       const prefs = {
         specialisation: selections.specialisation,
         languageProfile: selections.languageProfile,
+        languageCode: language.code,
+        locale: language.locale,
+        voiceProvider: language.provider,
         currentMood: selections.currentMood,
         challenges: selections.challenges,
         onboardingComplete: true,
@@ -481,7 +486,7 @@ export default function OnboardingPage() {
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, ease: 'easeOut' }}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[460px] overflow-y-auto pr-1"
                     >
                       {LANGUAGES.map((lang) => (
                         <ModeCard

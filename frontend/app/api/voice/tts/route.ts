@@ -1,61 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { findLanguage } from '@/lib/languages'
+import { ELEVENLABS_VOICES, YARNGPT_VOICES } from '@/lib/voice/catalog'
 
-// Curated calm/reassuring premade ElevenLabs voices — kept in sync with
-// VOICE_OPTIONS in app/chat/voice/page.tsx. Validating against this list
-// server-side stops the route being used as an open relay for arbitrary
-// voiceIds against our API key.
-const ALLOWED_VOICE_IDS = new Set([
-  '21m00Tcm4TlvDq8ikWAM', // Rachel — calm & warm
-  'EXAVITQu4vr4xnSDxMaL', // Bella — soft & soothing
-  'ErXwobaYiN019PkySvjV', // Antoni — gentle & reassuring
-])
+const ELEVENLABS_IDS = new Set(ELEVENLABS_VOICES.map((voice) => voice.id))
+const YARNGPT_IDS = new Set(YARNGPT_VOICES.map((voice) => voice.id))
+
+async function yarnGptTts(text: string, voiceId: string) {
+  const apiKey = process.env.YARNGPT_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'YarnGPT is not configured' }, { status: 503 })
+  const response = await fetch(process.env.YARNGPT_API_URL || 'https://yarngpt.ai/api/v1/tts', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+    body: JSON.stringify({ text, voice: voiceId, response_format: 'mp3' }),
+    signal: AbortSignal.timeout(30000),
+  })
+  if (!response.ok) return NextResponse.json({ error: 'YarnGPT request failed' }, { status: response.status })
+  return new NextResponse(await response.arrayBuffer(), {
+    headers: { 'Content-Type': response.headers.get('content-type') || 'audio/mpeg', 'Cache-Control': 'no-store', 'X-Voice-Provider': 'yarngpt' },
+  })
+}
+
+async function elevenLabsTts(text: string, voiceId: string) {
+  const apiKey = process.env.ELEVENLABS_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'ElevenLabs is not configured' }, { status: 503 })
+  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: 'POST',
+    headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+    body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } }),
+    signal: AbortSignal.timeout(30000),
+  })
+  if (!response.ok) return NextResponse.json({ error: 'ElevenLabs request failed' }, { status: response.status })
+  return new NextResponse(await response.arrayBuffer(), {
+    headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store', 'X-Voice-Provider': 'elevenlabs' },
+  })
+}
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null) as { text?: string; voiceId?: string } | null
-  const text = body?.text?.trim()
+  const body = await req.json().catch(() => null) as { text?: string; voiceId?: string; languageCode?: string } | null
+  const text = body?.text?.trim().slice(0, 600)
   const voiceId = body?.voiceId
-
-  if (!text || !voiceId) {
-    return NextResponse.json({ error: 'text and voiceId are required' }, { status: 400 })
-  }
-  if (!ALLOWED_VOICE_IDS.has(voiceId)) {
-    return NextResponse.json({ error: 'Unknown voiceId' }, { status: 400 })
-  }
-
-  const apiKey = process.env.ELEVENLABS_API_KEY
-  if (!apiKey) {
-    return NextResponse.json({ error: 'ElevenLabs is not configured' }, { status: 503 })
-  }
-
-  // Free tier is character-limited per month — cap a single reply so one
-  // long AI response can't burn a disproportionate chunk of the quota.
-  const safeText = text.slice(0, 600)
-
+  const language = findLanguage(body?.languageCode)
+  if (!text || !voiceId) return NextResponse.json({ error: 'text and voiceId are required' }, { status: 400 })
   try {
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        Accept: 'audio/mpeg',
-      },
-      body: JSON.stringify({
-        text: safeText,
-        model_id: 'eleven_turbo_v2_5',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-      }),
-    })
-
-    if (!res.ok) {
-      const detail = await res.text().catch(() => '')
-      return NextResponse.json({ error: 'ElevenLabs request failed', detail }, { status: res.status })
+    if (language.provider === 'yarngpt') {
+      if (!YARNGPT_IDS.has(voiceId)) return NextResponse.json({ error: 'Voice is not available for this language' }, { status: 400 })
+      return await yarnGptTts(text, voiceId)
     }
-
-    const audio = await res.arrayBuffer()
-    return new NextResponse(audio, {
-      headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-store' },
-    })
-  } catch {
-    return NextResponse.json({ error: 'ElevenLabs request failed' }, { status: 502 })
+    if (!ELEVENLABS_IDS.has(voiceId)) return NextResponse.json({ error: 'Voice is not available for this language' }, { status: 400 })
+    return await elevenLabsTts(text, voiceId)
+  } catch (error) {
+    const message = error instanceof Error && error.name === 'TimeoutError' ? 'TTS request timed out' : 'TTS provider request failed'
+    return NextResponse.json({ error: message }, { status: 502 })
   }
 }
