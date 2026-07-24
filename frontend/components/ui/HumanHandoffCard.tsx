@@ -1,7 +1,8 @@
 'use client'
 
 import { ShieldAlert } from 'lucide-react'
-import { NIGERIAN_SUPPORT_RESOURCES, type SupportResource } from '@/lib/supportResources'
+import { type SupportResource } from '@/lib/supportResources'
+import { findRegion } from '@/lib/regions'
 
 type HumanHandoffCardProps = {
   riskLevel: 'high' | 'critical'
@@ -11,7 +12,7 @@ type HumanHandoffCardProps = {
 
 export default function HumanHandoffCard({
   riskLevel,
-  resources = NIGERIAN_SUPPORT_RESOURCES,
+  resources = findRegion('OTHER').resources,
   onContinueChat,
 }: HumanHandoffCardProps) {
   const isCritical = riskLevel === 'critical'
@@ -50,7 +51,7 @@ export default function HumanHandoffCard({
         </div>
 
         <div>
-          <p className="text-xs font-semibold text-dark mb-2">Nigerian support resources</p>
+          <p className="text-xs font-semibold text-dark mb-2">Support resources for your region</p>
           <div className="space-y-2">
             {resources.map((resource) => (
               <div key={resource.name} className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">

@@ -371,6 +371,8 @@ export default function ChatPage() {
           languageProfile: prefs.languageProfile ?? 'Neutral / International',
           activeMode,
           userName: prefs.firstName ?? user?.firstName ?? 'there',
+          communicationStyle: prefs.communicationStyle ?? 'natural',
+          regionCode: prefs.regionCode ?? 'OTHER',
         }),
       })
 
@@ -389,6 +391,7 @@ export default function ChatPage() {
         shouldLogCrisisEvent?: boolean
         crisisEvent?: CrisisEventMetadata | null
         memoryExtraction?: MemoryExtractionResult
+        supportResources?: Message['supportResources']
       }
 
       const aiMsg: Message = {
@@ -405,6 +408,7 @@ export default function ChatPage() {
           data.showHumanHandoff ?? (data.riskLevel === 'high' || data.riskLevel === 'critical'),
         responseType: data.responseType,
         memoryExtraction: data.memoryExtraction,
+        supportResources: data.supportResources,
       }
 
       const final = [...updated, aiMsg]

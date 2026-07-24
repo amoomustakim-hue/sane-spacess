@@ -43,6 +43,7 @@ const HIGH_RULES: SignalRule[] = [
   { signal: 'might hurt myself', patterns: [/\bi might hurt myself\b/, /\bi may hurt myself\b/, /\bi could hurt myself\b/], score: 0.86 },
   { signal: 'cannot continue', patterns: [/\bi no fit continue\b/, /\bi can'?t continue\b/, /\bi cannot continue\b/], score: 0.78 },
   { signal: 'serious hopelessness', patterns: [/\bnothing matters\b/, /\bdone with life\b/, /\bno reason to live\b/], score: 0.86 },
+  { signal: 'multilingual disappearance or hopelessness', patterns: [/quiero desaparecer/, /no quiero estar aqui/, /je veux disparaitre/, /quero desaparecer/, /nao quero estar aqui/, /ich will verschwinden/], score: 0.86 },
 ]
 
 const CRITICAL_RULES: SignalRule[] = [
@@ -50,6 +51,7 @@ const CRITICAL_RULES: SignalRule[] = [
   { signal: 'specific timeframe', patterns: [/\btonight\b/, /\btoday\b/, /\bright now\b/, /\bnow\b/, /\bthis night\b/], score: 0.08 },
   { signal: 'specific plan', patterns: [/\bwith (a|my) (knife|rope|blade|gun|pills?)\b/, /\boverdose\b/, /\bjump\b/, /\bpoison\b/], score: 0.12 },
   { signal: 'harm to others', patterns: [/\bi will hurt (him|her|them|someone)\b/, /\bi want to hurt (him|her|them|someone)\b/], score: 0.94 },
+  { signal: 'multilingual direct self-harm intent', patterns: [/quiero matarme/, /quiero morir/, /je veux me tuer/, /je veux mourir/, /quero me matar/, /quero morrer/, /ich will mich umbringen/, /ich will sterben/], score: 0.94 },
 ]
 
 function findMatches(message: string, rules: SignalRule[]) {

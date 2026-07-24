@@ -9,6 +9,10 @@ import MoodEmoji from '@/components/ui/MoodEmoji'
 import PillChip from '@/components/ui/PillChip'
 import Button from '@/components/ui/Button'
 import TypingIndicator from '@/components/ui/TypingIndicator'
+import { findLanguage } from '@/lib/languages'
+import type { CommunicationStyle } from '@/lib/preferences'
+import LanguageVoicePicker from '@/components/ui/LanguageVoicePicker'
+import RegionSelector from '@/components/ui/RegionSelector'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -39,14 +43,6 @@ const MODES = [
   { emoji: '📚', title: 'Student Support', desc: 'CGPA stress, hostel life, deadlines' },
   { emoji: '🎮', title: 'Chill / Play', desc: 'Low-pressure, fun, mood boosts' },
   { emoji: '💼', title: 'Work & Career', desc: 'Burnout, ambition, workplace stress' },
-]
-
-const LANGUAGES = [
-  { emoji: '🇳🇬', title: 'Nigerian Pidgin', desc: "I dey, abeg, wahala — SaneSpace gets it" },
-  { emoji: '🗣️', title: 'Lagos English', desc: 'Fast, code-switching, street-smart' },
-  { emoji: '🎓', title: 'Student English', desc: 'Campus life, mixed formal and informal' },
-  { emoji: '🏠', title: 'Nigerian Home English', desc: 'Proper Nigerian English, family-oriented' },
-  { emoji: '🌍', title: 'Neutral / International', desc: 'Standard English, no slang' },
 ]
 
 type ClosingMsg = { line1: string; body: string; disclaimer?: string }
@@ -89,6 +85,10 @@ type Selections = {
   challenges: string[]
   specialisation: string | null
   languageProfile: string | null
+  languageCode: string
+  communicationStyle: CommunicationStyle
+  voiceId: string
+  regionCode: string
 }
 
 const INITIAL_SELECTIONS: Selections = {
@@ -96,6 +96,10 @@ const INITIAL_SELECTIONS: Selections = {
   challenges: [],
   specialisation: null,
   languageProfile: null,
+  languageCode: 'en',
+  communicationStyle: 'natural',
+  voiceId: 'browser',
+  regionCode: 'OTHER',
 }
 
 // ─── AIBubble ────────────────────────────────────────────────────────────────
@@ -240,7 +244,7 @@ export default function OnboardingPage() {
           selections: Selections
         }
         setCurrentStep(s)
-        setSelections(sel)
+        setSelections({ ...INITIAL_SELECTIONS, ...sel })
       }
     } catch {
       // ignore storage errors
@@ -294,22 +298,26 @@ export default function OnboardingPage() {
     goToStep(4, 500)
   }
 
-  const handleLanguageSelect = (title: string) => {
-    setSelections((prev) => ({ ...prev, languageProfile: title }))
-    goToStep(5, 500)
-  }
 
   const handleComplete = () => {
     try {
+      const language = findLanguage(selections.languageCode)
       const prefs = {
         specialisation: selections.specialisation,
-        languageProfile: selections.languageProfile,
+        languageProfile: language.name,
+        communicationStyle: selections.communicationStyle,
+        voiceId: selections.voiceId,
+        regionCode: selections.regionCode,
+        languageCode: language.code,
+        locale: language.locale,
+        voiceProvider: language.provider,
         currentMood: selections.currentMood,
         challenges: selections.challenges,
         onboardingComplete: true,
         ...(user?.firstName ? { firstName: user.firstName } : {}),
       }
       localStorage.setItem('sane_user_preferences', JSON.stringify(prefs))
+      localStorage.setItem('sane_voice_preference', selections.voiceId)
       localStorage.removeItem('sane_onboarding_progress')
     } catch {}
     router.push('/dashboard')
@@ -328,7 +336,7 @@ export default function OnboardingPage() {
   const closing = selections.specialisation ? CLOSING[selections.specialisation] : null
   const summaryMood = MOODS.find((m) => m.label === selections.currentMood)
   const summaryMode = MODES.find((m) => m.title === selections.specialisation)
-  const summaryLang = LANGUAGES.find((l) => l.title === selections.languageProfile)
+  const summaryLang = findLanguage(selections.languageCode)
 
   // ────────────────────────────────────────────────────────────────────────
   return (
@@ -472,27 +480,26 @@ export default function OnboardingPage() {
               <div>
                 <AIBubble isTyping={isTyping}>
                   <p>Last thing — how do you naturally talk?</p>
-                  <p className="mt-1 text-gray-text">SaneSpace will match your style.</p>
+                  <p className="mt-1 text-gray-text">You can change these anytime in Profile.</p>
                 </AIBubble>
 
                 <AnimatePresence>
                   {showContent && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, ease: 'easeOut' }}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                    >
-                      {LANGUAGES.map((lang) => (
-                        <ModeCard
-                          key={lang.title}
-                          emoji={lang.emoji}
-                          title={lang.title}
-                          desc={lang.desc}
-                          selected={selections.languageProfile === lang.title}
-                          onClick={() => handleLanguageSelect(lang.title)}
-                        />
-                      ))}
+                    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
+                      <RegionSelector value={selections.regionCode} onChange={(regionCode) => setSelections((prev) => ({ ...prev, regionCode }))} />
+                      <div className="mt-6">
+                      <LanguageVoicePicker
+                        languageCode={selections.languageCode}
+                        communicationStyle={selections.communicationStyle}
+                        voiceId={selections.voiceId}
+                        onLanguageChange={(languageCode) => setSelections((prev) => ({ ...prev, languageCode }))}
+                        onStyleChange={(communicationStyle) => setSelections((prev) => ({ ...prev, communicationStyle }))}
+                        onVoiceChange={(voiceId) => setSelections((prev) => ({ ...prev, voiceId }))}
+                      />
+                      </div>
+                      <Button variant="primary" size="md" className="mt-6" onClick={() => goToStep(5, 0)}>
+                        Continue
+                      </Button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -557,7 +564,7 @@ export default function OnboardingPage() {
                               <span className="text-sm text-gray-text">
                                 Language:{' '}
                                 <span className="font-semibold text-dark">
-                                  {summaryLang.title}
+                                  {summaryLang.nativeName}
                                 </span>
                               </span>
                             </div>

@@ -6,6 +6,9 @@ import { useUser } from '@clerk/nextjs'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, MicOff, Keyboard, X } from 'lucide-react'
 import type { Message, Conversation } from '@/lib/types'
+import { findLanguage, type SupportedLanguage } from '@/lib/languages'
+import { voicesForProvider } from '@/lib/voice/catalog'
+import { providerLabel } from '@/lib/voice/routing'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -14,18 +17,6 @@ type Status = 'idle' | 'listening' | 'processing' | 'speaking'
 // Web Speech API — cast to any since TS DOM types vary by tsconfig
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySpeechRecognition = any
-
-type VoiceOption = { id: string; label: string; sub: string; provider: 'browser' | 'elevenlabs' }
-
-// Curated calm/reassuring premade ElevenLabs voices. Kept small since the
-// free tier is character-limited per month — only used when a user
-// explicitly picks one; default stays the free on-device browser voice.
-const VOICE_OPTIONS: VoiceOption[] = [
-  { id: 'browser', label: 'Default', sub: 'Free, on-device', provider: 'browser' },
-  { id: '21m00Tcm4TlvDq8ikWAM', label: 'Rachel', sub: 'Calm & warm', provider: 'elevenlabs' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Bella', sub: 'Soft & soothing', provider: 'elevenlabs' },
-  { id: 'ErXwobaYiN019PkySvjV', label: 'Antoni', sub: 'Gentle & reassuring', provider: 'elevenlabs' },
-]
 
 const VOICE_PREF_KEY = 'sane_voice_preference'
 
@@ -118,6 +109,9 @@ export default function VoicePage() {
   const [conversationMessages, setConversationMessages] = useState<Message[]>([])
   const [firstName, setFirstName] = useState('there')
   const [voiceId, setVoiceId] = useState('browser')
+  const [language, setLanguage] = useState<SupportedLanguage>(() => findLanguage())
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null)
+  const voiceOptions = voicesForProvider(language.provider)
 
   const audioContextRef = useRef<AudioContext | null>(null)
   const animFrameRef = useRef<number | null>(null)
@@ -133,7 +127,11 @@ export default function VoicePage() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(VOICE_PREF_KEY)
-      if (saved && VOICE_OPTIONS.some((v) => v.id === saved)) setVoiceId(saved)
+      const prefs = JSON.parse(localStorage.getItem('sane_user_preferences') ?? '{}')
+      const selectedLanguage = findLanguage(prefs.languageCode ?? prefs.languageProfile)
+      setLanguage(selectedLanguage)
+      const compatibleVoices = voicesForProvider(selectedLanguage.provider)
+      if (saved && compatibleVoices.some((item) => item.id === saved)) setVoiceId(saved)
     } catch {}
   }, [])
 
@@ -279,9 +277,9 @@ export default function VoicePage() {
     }
 
     const recognition = new SR()
+    recognition.lang = language.locale
     recognition.continuous = false   // one utterance at a time is more reliable
     recognition.interimResults = true
-    recognition.lang = 'en-US'
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (event: any) => {
@@ -316,7 +314,7 @@ export default function VoicePage() {
 
     recognitionRef.current = recognition
     try { recognition.start() } catch { /* already started */ }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [language.locale]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Persist to localStorage so it shows up in /chat's history ───────────
   const saveConversation = (msgs: Message[]) => {
@@ -376,6 +374,8 @@ export default function VoicePage() {
           languageProfile: (prefs.languageProfile as string) ?? 'Neutral / International',
           activeMode: 'listening',
           userName: firstName,
+          communicationStyle: (prefs.communicationStyle as string) ?? 'natural',
+          regionCode: (prefs.regionCode as string) ?? 'OTHER',
         }),
       })
 
@@ -426,8 +426,8 @@ export default function VoicePage() {
       // Pick a good voice — getVoices() can return [] before the browser has
       // loaded its voice list, so fall back to whatever loads via the event.
       const pickVoice = (voices: SpeechSynthesisVoice[]) =>
-        voices.find((v) => v.lang.startsWith('en') && v.name.includes('Female')) ||
-        voices.find((v) => v.lang.startsWith('en')) ||
+        voices.find((v) => v.lang.startsWith(language.locale.split('-')[0]) && v.name.includes('Female')) ||
+        voices.find((v) => v.lang.startsWith(language.locale.split('-')[0])) ||
         voices[0]
 
       const initialVoices = synth.getVoices()
@@ -462,8 +462,8 @@ export default function VoicePage() {
     })
   }
 
-  // ── ElevenLabs playback ──────────────────────────────────────────────────
-  const speakWithElevenLabs = async (text: string, id: string): Promise<void> => {
+  // ── Provider-backed playback ──────────────────────────────────────────────────
+  const speakWithProvider = async (text: string, id: string): Promise<void> => {
     setStatus('speaking')
     setIsAISpeaking(true)
     setAiText(text)
@@ -472,10 +472,14 @@ export default function VoicePage() {
       const res = await fetch('/api/voice/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voiceId: id }),
+        body: JSON.stringify({ text, voiceId: id, languageCode: language.code }),
       })
-      if (!res.ok) throw new Error('tts request failed')
+      if (!res.ok) {
+        const details = await res.json().catch(() => null) as { error?: string } | null
+        throw new Error(details?.error ?? 'Voice provider request failed')
+      }
 
+      setVoiceNotice(null)
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       if (!audioPlayerRef.current) audioPlayerRef.current = new Audio()
@@ -489,9 +493,10 @@ export default function VoicePage() {
         audio.play().catch(() => resolve())
       })
       URL.revokeObjectURL(url)
-    } catch {
-      // Free-tier quota hit, network issue, etc. — fall back to the
-      // on-device voice so the session doesn't just go silent.
+    } catch (error) {
+      // Provider errors fall back to the on-device voice so the session stays audible.
+      const reason = error instanceof Error ? error.message : 'Voice provider unavailable'
+      setVoiceNotice(`${reason}. Using your device voice for this response.`)
       await speakResponse(text)
       return
     } finally {
@@ -502,9 +507,9 @@ export default function VoicePage() {
 
   // ── Dispatch to the selected voice provider ──────────────────────────────
   const speak = async (text: string): Promise<void> => {
-    const opt = VOICE_OPTIONS.find((v) => v.id === voiceIdRef.current)
-    if (opt && opt.provider === 'elevenlabs') {
-      await speakWithElevenLabs(text, opt.id)
+    const opt = voiceOptions.find((item) => item.id === voiceIdRef.current)
+    if (opt && opt.provider !== 'browser') {
+      await speakWithProvider(text, opt.id)
     } else {
       await speakResponse(text)
     }
@@ -598,7 +603,7 @@ export default function VoicePage() {
 
         {/* Voice picker */}
         <div className="flex flex-wrap items-center justify-center gap-2 mt-6 max-w-sm">
-          {VOICE_OPTIONS.map((opt) => {
+          {voiceOptions.map((opt) => {
             const selected = voiceId === opt.id
             return (
               <button
@@ -620,6 +625,10 @@ export default function VoicePage() {
             )
           })}
         </div>
+
+        <p className="mt-3 text-xs font-medium" style={{ color: '#6B7B7B' }}>
+          {language.provider === 'yarngpt' ? 'Nigerian voice engine' : 'Global voice engine'}: {providerLabel(language.provider)}
+        </p>
 
         {micError && (
           <p className="text-sm mt-3 mb-1 max-w-xs text-red-500">{micError}</p>
@@ -669,7 +678,7 @@ export default function VoicePage() {
             className="px-3 py-2.5 rounded-full border bg-white font-medium text-xs"
             style={{ borderColor: '#E5E7EB', color: '#6B7B7B' }}
           >
-            Voice: {VOICE_OPTIONS.find((v) => v.id === voiceId)?.label ?? 'Default'}
+            {language.nativeName} - {voiceOptions.find((item) => item.id === voiceId)?.label ?? 'Device voice'}
           </button>
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(10,124,110,0.15)' }}
@@ -685,6 +694,11 @@ export default function VoicePage() {
       </div>
 
       {/* ── Main content ── */}
+      {voiceNotice && (
+        <div role="status" className="relative z-10 mx-auto mt-2 max-w-md rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-800">
+          {voiceNotice}
+        </div>
+      )}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pb-36">
 
         {/* Title */}
