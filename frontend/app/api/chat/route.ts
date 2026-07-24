@@ -41,6 +41,7 @@ function buildSystemPrompt(
   languageProfile: string,
   activeMode: string,
   userName: string,
+  communicationStyle = 'natural',
 ): string {
   const specKey = SPEC_MAP[specialisation] ?? 'talk'
   const langKey = LANG_MAP[languageProfile] ?? 'neutral'
@@ -166,6 +167,7 @@ RESPONSE STYLE:
       ? (languageBlocks[langKey] ?? languageBlocks.neutral)
       : `LANGUAGE: Respond naturally in ${selectedLanguage.name} (${selectedLanguage.nativeName}). Do not switch to English unless the user does. Keep the same warm, conversational tone and use culturally respectful phrasing.`,
     modeBlocks[activeMode] ?? modeBlocks.listening,
+    `CONVERSATION STYLE: Use a ${communicationStyle} style while preserving empathy, clarity, and safety.`,
     culturalContext,
     responseGuidelines,
   ].join('\n')
@@ -328,8 +330,9 @@ export async function POST(req: NextRequest) {
       languageProfile: string
       activeMode: string
       userName: string
+      communicationStyle?: string
     }
-    const { messages, specialisation, languageProfile, userName } = body
+    const { messages, specialisation, languageProfile, userName, communicationStyle } = body
 
     const lastUserMsg = [...messages].reverse().find((m) => m.sender === 'user')?.content ?? ''
     const riskResult = classifyRisk(lastUserMsg, messages)
@@ -451,7 +454,7 @@ You don't have to face this alone. Please make that call. 🌿`,
       })
     }
 
-    const systemPrompt = buildSystemPrompt(specialisation, languageProfile, detectedMode, userName)
+    const systemPrompt = buildSystemPrompt(specialisation, languageProfile, detectedMode, userName, communicationStyle)
 
     const openaiMessages = [
       { role: 'system' as const, content: systemPrompt },

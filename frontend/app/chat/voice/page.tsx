@@ -372,6 +372,7 @@ export default function VoicePage() {
           languageProfile: (prefs.languageProfile as string) ?? 'Neutral / International',
           activeMode: 'listening',
           userName: firstName,
+          communicationStyle: (prefs.communicationStyle as string) ?? 'natural',
         }),
       })
 

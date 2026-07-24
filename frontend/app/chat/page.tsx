@@ -371,6 +371,7 @@ export default function ChatPage() {
           languageProfile: prefs.languageProfile ?? 'Neutral / International',
           activeMode,
           userName: prefs.firstName ?? user?.firstName ?? 'there',
+          communicationStyle: prefs.communicationStyle ?? 'natural',
         }),
       })
 

@@ -9,6 +9,9 @@ import Sidebar from '@/components/layout/Sidebar'
 import Button from '@/components/ui/Button'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 import { fadeUp } from '@/lib/animations'
+import { findLanguage } from '@/lib/languages'
+import type { CommunicationStyle } from '@/lib/preferences'
+import LanguageVoicePicker from '@/components/ui/LanguageVoicePicker'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -21,14 +24,6 @@ const SPEC_MODES = [
   { key: 'work', emoji: '💼', title: 'Work & Career', desc: 'Burnout & ambition' },
 ]
 
-const LANG_PROFILES = [
-  { key: 'pidgin', emoji: '🇳🇬', title: 'Nigerian Pidgin', desc: "Dey, abeg, wahala — I get you" },
-  { key: 'lagos', emoji: '🗣️', title: 'Lagos English', desc: 'Fast, real, code-switching' },
-  { key: 'student', emoji: '🎓', title: 'Student English', desc: 'Campus life mixed' },
-  { key: 'home', emoji: '🏠', title: 'Nigerian Home English', desc: 'Formal, family-oriented' },
-  { key: 'neutral', emoji: '🌍', title: 'Neutral / International', desc: 'Standard English' },
-]
-
 const SPEC_LABEL_TO_KEY: Record<string, string> = {
   'Therapy Support': 'therapy', 'Life Coaching': 'coaching',
   'Just to Talk': 'talk', 'Student Support': 'student',
@@ -39,17 +34,6 @@ const SPEC_KEY_TO_LABEL: Record<string, string> = {
   talk: 'Just to Talk', student: 'Student Support',
   chill: 'Chill / Play', work: 'Work & Career',
 }
-const LANG_LABEL_TO_KEY: Record<string, string> = {
-  'Nigerian Pidgin': 'pidgin', 'Lagos English': 'lagos',
-  'Student English': 'student', 'Nigerian Home English': 'home',
-  'Neutral / International': 'neutral',
-}
-const LANG_KEY_TO_LABEL: Record<string, string> = {
-  pidgin: 'Nigerian Pidgin', lagos: 'Lagos English',
-  student: 'Student English', home: 'Nigerian Home English',
-  neutral: 'Neutral / International',
-}
-
 const REMINDER_TIMES = ['8:00 AM', '9:00 AM', '12:00 PM', '6:00 PM', '9:00 PM']
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -189,7 +173,9 @@ export default function ProfilePage() {
 
   const [preferences, setPreferences] = useState({
     specialisation: 'talk',
-    languageProfile: 'neutral',
+    languageCode: 'en',
+    communicationStyle: 'natural' as CommunicationStyle,
+    voiceId: 'browser',
   })
   const [isSaving, setIsSaving] = useState(false)
   const [savedSection, setSavedSection] = useState<string | null>(null)
@@ -215,9 +201,14 @@ export default function ProfilePage() {
       ) as Record<string, string>
       const specKey =
         SPEC_LABEL_TO_KEY[saved.specialisation] ?? saved.specialisation ?? 'talk'
-      const langKey =
-        LANG_LABEL_TO_KEY[saved.languageProfile] ?? saved.languageProfile ?? 'neutral'
-      setPreferences({ specialisation: specKey, languageProfile: langKey })
+      const language = findLanguage(saved.languageCode ?? saved.languageProfile)
+      const voiceId = localStorage.getItem('sane_voice_preference') ?? saved.voiceId ?? 'browser'
+      setPreferences({
+        specialisation: specKey,
+        languageCode: language.code,
+        communicationStyle: (saved.communicationStyle as CommunicationStyle) ?? 'natural',
+        voiceId,
+      })
       setWellnessGoal(saved.wellnessGoal ?? '')
       setDisplayWellnessGoal(saved.wellnessGoal || 'Not set')
     } catch {}
@@ -290,9 +281,15 @@ export default function ProfilePage() {
       const saved = JSON.parse(localStorage.getItem('sane_user_preferences') ?? '{}')
       saved.specialisation =
         SPEC_KEY_TO_LABEL[preferences.specialisation] ?? preferences.specialisation
-      saved.languageProfile =
-        LANG_KEY_TO_LABEL[preferences.languageProfile] ?? preferences.languageProfile
+      const language = findLanguage(preferences.languageCode)
+      saved.languageProfile = language.name
+      saved.languageCode = language.code
+      saved.locale = language.locale
+      saved.voiceProvider = language.provider
+      saved.communicationStyle = preferences.communicationStyle
+      saved.voiceId = preferences.voiceId
       localStorage.setItem('sane_user_preferences', JSON.stringify(saved))
+      localStorage.setItem('sane_voice_preference', preferences.voiceId)
     } catch {}
     setTimeout(() => {
       setIsSaving(false)
@@ -475,26 +472,15 @@ export default function ProfilePage() {
                   />
                 ))}
               </div>
-
-              {/* Language Profile */}
-              <p className="text-sm font-medium text-dark mb-1">Language Profile</p>
-              <p className="text-xs text-gray-text mb-3">
-                How SaneSpace understands and responds to you
-              </p>
-              <div className="flex flex-col gap-2 mb-6">
-                {LANG_PROFILES.map((lang) => (
-                  <SelectionCard
-                    key={lang.key}
-                    emoji={lang.emoji}
-                    title={lang.title}
-                    desc={lang.desc}
-                    selected={preferences.languageProfile === lang.key}
-                    onClick={() =>
-                      setPreferences((prev) => ({ ...prev, languageProfile: lang.key }))
-                    }
-                  />
-                ))}
-              </div>
+              {/* Language, style and voice */}
+              <LanguageVoicePicker
+                languageCode={preferences.languageCode}
+                communicationStyle={preferences.communicationStyle}
+                voiceId={preferences.voiceId}
+                onLanguageChange={(languageCode) => setPreferences((prev) => ({ ...prev, languageCode }))}
+                onStyleChange={(communicationStyle) => setPreferences((prev) => ({ ...prev, communicationStyle }))}
+                onVoiceChange={(voiceId) => setPreferences((prev) => ({ ...prev, voiceId }))}
+              />
 
               <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
                 <Button
